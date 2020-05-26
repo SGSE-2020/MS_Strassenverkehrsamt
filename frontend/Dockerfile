@@ -22,6 +22,6 @@ FROM nginx:alpine
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build /app/static/ /app/html
+COPY --from=build /app/dist/ /app/html
 
 EXPOSE 80
