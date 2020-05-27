@@ -35,8 +35,14 @@ services:
     webapp:
         build: frontend/.
         container_name: ms_strassenverkehrsamt_frontend
+        networks:
+            - frontend
+
+    webproxy:
+        build: webproxy/.
+        container_name: ms_strassenverkehrsamt_webproxy
         ports:
-            - 8080:3000
+            - 8080:80
         networks:
             - frontend
 

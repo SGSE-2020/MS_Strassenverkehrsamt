@@ -15,12 +15,36 @@ export default {
   components: {},
   data() {
     return {
-      test: 'testvalue'
+      test: 'testvalue',
+      entries: ['Hallo', 'dies', 'sind', 'demo','daten']
     }
   },
   computed: {
+    /*
     getData() {
-      return ['Hallo', 'dies', 'sind', 'daten']
+      //return ['Hallo', 'dies', 'sind', 'daten']
+
+    fetch('/api/hello')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.somedata);
+        return data.somedata;
+      });
+
+    }
+    */
+  },
+  created: function () {
+    this.callAPI();
+  },
+  methods: {
+    callAPI() {
+      fetch('/api/hello')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.somedata);
+          //this.entries = data.somedata;
+        });
     }
   }
 }
