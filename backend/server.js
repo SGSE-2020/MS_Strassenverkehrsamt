@@ -1,19 +1,9 @@
-var express = require('express');
-var app = express();
+const config = {
+  INTERFACE: "0.0.0.0",
+  PORT_REST: 3500,
+  PORT_GRPC: 50051
+};
 
-app.use(function(req, res, next) {
-  console.log(req.method + " " + req.url);
-  next();
-});
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
-app.get('/hello', function (req, res) {
-  res.send({somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']});
-});
-
-app.listen(3500, function () {
-  console.log('MS_Strassenverkehrsamt API listening on port 3500!');
-});
+/* Start all components */
+require('./components/api_rest')(config);
+require('./components/api_grpc')(config);

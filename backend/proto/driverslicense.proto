@@ -1,0 +1,24 @@
+syntax = "proto3";
+package driverslicense;
+
+service DriversLicenseService {
+    rpc getLicense(DriversLicenseId) returns (DriversLicense) {}
+}
+
+message DriversLicenseId {
+    string uid = 1;
+}
+
+message DriversLicense {
+    string uid = 1;
+    string firstName = 2;
+    string lastName = 3;
+    Date birthDate = 4;
+    Date validUntil = 5;
+}
+
+message Date{
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+}
