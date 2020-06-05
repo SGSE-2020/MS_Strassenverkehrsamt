@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: ms-strassenverkehrsamt
+  name: ms-strassenverkehrsamt
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ms-strassenverkehrsamt
+    spec:
+      containers:
+      - image: ms-strassenverkehrsamt-frontend
+        name: ms-strassenverkehrsamt-frontend
+        ports:
+        - containerPort: 80
+      - image: ms-strassenverkehrsamt-backend
+        name: ms-strassenverkehrsamt-backend
+        ports:
+        - containerPort: 8080
+        - containerPort: 50051
+      restartPolicy: Always
+status: {}
