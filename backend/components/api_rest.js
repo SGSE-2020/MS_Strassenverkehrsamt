@@ -24,6 +24,12 @@ module.exports = function (config) {
         });
     });
 
+    app.get('/*', function (req, res) {
+        res.send({
+            somedata: ['this', 'route', 'fetches', 'all', 'routes']
+        });
+    });
+
     app.listen(config.PORT_REST, function () {
         console.log('MS_Strassenverkehrsamt API listening on port ' + config.PORT_REST);
     });
