@@ -1,6 +1,6 @@
 const config = {
   INTERFACE: "0.0.0.0",
-  PORT_REST: 3500,
+  PORT_REST: 8080,
   PORT_GRPC: 50051
 };
 
