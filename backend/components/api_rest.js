@@ -17,6 +17,12 @@ module.exports = function (config) {
         next();
     });
 
+    app.get('/alive', function (req, res) {
+        res.send({
+            status: "alive"
+        });
+    });
+
     MongoClient.connect(mongodbURL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
