@@ -1,5 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
+let development = process.env.NODE_ENV !== 'production'
+
 export default {
   mode: 'spa',
   /*
@@ -53,7 +55,9 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: development ? 'http://localhost/' : 'http://strassenverkehrsamt.dvess.network/'
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
