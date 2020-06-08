@@ -1,6 +1,6 @@
 ### STAGE 1: Build ###
 
-FROM node:latest AS build
+FROM node:lts AS build
 
 # Create app directory
 WORKDIR /app
