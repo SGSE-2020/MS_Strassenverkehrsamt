@@ -29,13 +29,13 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
+
+      <!--- <v-toolbar-title v-text="title" /> --->
+      <v-img
+        :src="require('@/assets/banner.png')"
+        max-height="40"
+        aspect-ratio="7.94"
+      />
       <v-spacer />
     </v-app-bar>
     <v-content>
@@ -44,7 +44,10 @@
       </v-container>
     </v-content>
     <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span
+        >&copy; {{ new Date().getFullYear() }} Stra&szlig;enverkehrsamt
+        SmartCity</span
+      >
     </v-footer>
   </v-app>
 </template>
@@ -59,13 +62,18 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Welcome',
+          title: 'Startseite',
           to: '/'
         },
         {
+          icon: 'mdi-account',
+          title: 'Konto',
+          to: '/account'
+        },
+        {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'Kennzeichen',
+          to: '/licenseplate'
         }
       ],
       miniVariant: false,
