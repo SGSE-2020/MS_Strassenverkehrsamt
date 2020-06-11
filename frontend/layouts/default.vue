@@ -33,7 +33,7 @@
       <!--- <v-toolbar-title v-text="title" /> --->
       <v-img
         :src="require('@/assets/banner.png')"
-        max-height="40"
+        max-width="400"
         aspect-ratio="7.94"
       />
       <v-spacer />
