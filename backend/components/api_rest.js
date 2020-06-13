@@ -91,6 +91,7 @@ module.exports = function (config) {
             });
 
             app.get('/hello', function (req, res) {
+                res.type('application/json');
                 res.send({
                     somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']
                 });

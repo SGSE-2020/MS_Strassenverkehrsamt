@@ -24,7 +24,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
+    <v-app-bar :clipped-left="clipped" fixed app class="elevation-1">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
@@ -69,6 +69,11 @@ export default {
           icon: 'mdi-account',
           title: 'Konto',
           to: '/account'
+        },
+        {
+          icon: 'mdi-file-document-edit',
+          title: 'Anträge',
+          to: '/application'
         },
         {
           icon: 'mdi-chart-bubble',

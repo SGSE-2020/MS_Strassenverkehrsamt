@@ -3,7 +3,7 @@
     <v-flex class="text-center">
       <h1>Melde dich mit deinem SmartCity Konto an</h1>
       <br />
-      <v-card width="500" class="mx-auto mt-5">
+      <v-card width="500" class="mx-auto mt-5 elevation-5">
         <v-card-title><h1 class="display-1">Login</h1></v-card-title>
         <v-card-text>
           <v-form>

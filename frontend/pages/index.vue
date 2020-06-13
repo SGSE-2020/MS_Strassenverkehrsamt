@@ -16,6 +16,8 @@
 </template>
 
 <script>
+const axios = require('axios')
+
 export default {
   components: {},
   data() {
@@ -40,17 +42,21 @@ export default {
     */
   },
   mounted() {
-    this.callAPI()
+    // Display inital values
+    axios
+      .get('/api/hello')
+      .then((response) => {
+        // handle success
+        console.log(response.data.somedata)
+        this.entries = response.data.somedata
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
   },
   methods: {
     callAPI() {
       console.log('callAPI')
-      fetch('/api/hello')
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.somedata)
-          this.entries = data.somedata
-        })
     }
   }
 }
