@@ -44,7 +44,11 @@ export default {
   mounted() {
     // Display inital values
     axios
-      .get('/api/hello')
+      .get('/api/hello', {
+        headers: {
+          Authorization: this.$store.state.user.refreshToken
+        }
+      })
       .then((response) => {
         // handle success
         console.log(response.data.somedata)
