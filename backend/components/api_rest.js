@@ -125,13 +125,14 @@ module.exports = function (config) {
                             })
                             .then(res => {
                                 console.log(res);
-                                db.collection("log").insertOne({type: 'grpc-res', time: new Date().toISOString(), msg: res});
 
                                 res.type('application/json');
-                                res.send({
+                                res.status(200).send({
                                     somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API'],
                                     content: JSON.stringify(res)
                                 });
+                                
+                                db.collection("log").insertOne({type: 'grpc-res', time: new Date().toISOString(), msg: res});
                             }).catch(err => {
                                 console.error(err)                                
                                 db.collection("log").insertOne({type: 'grpc-catch', time: new Date().toISOString(), msg: err});
