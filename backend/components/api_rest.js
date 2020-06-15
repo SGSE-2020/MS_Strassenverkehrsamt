@@ -31,7 +31,7 @@ module.exports = function (config) {
                 })
                 .then(res => {
                     console.log(res);
-                    res.status(200).json({
+                    res.status(403).json({
                         error: 'test',
                         content: res
                     });
@@ -43,7 +43,7 @@ module.exports = function (config) {
                 });
             }
         }
-        next();
+        //next();
     });
 
     app.get('/alive', function (req, res) {
