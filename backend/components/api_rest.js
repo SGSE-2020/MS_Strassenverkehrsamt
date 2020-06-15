@@ -17,11 +17,6 @@ module.exports = function (config) {
         extended: true
     }));
 
-    app.use(function (req, res, next) {
-        console.log(req.method + " " + req.url);
-        next();
-    });
-
     app.get('/alive', function (req, res) {
         res.send({
             status: "alive"
@@ -36,6 +31,7 @@ module.exports = function (config) {
             const db = client.db('stva');
             db.collection("log").remove();
 
+            // Logging
             app.get('/log/all', function (req, res) {
                 db.collection("log").find({}).sort({timestamp: -1}).toArray(function (err, result) {
                     if (err) {
@@ -49,6 +45,48 @@ module.exports = function (config) {
                         result: result
                     });
                 });
+            });
+
+            // Auth
+            app.use(function (req, res, next) {
+                console.log(req.method + " " + req.url);
+
+                if (!req.headers.authorization) {
+                    return res.status(401).json({
+                        error: 'No credentials sent!'
+                    });
+                } else {
+                    try {
+                        grpcClient.verifyUser({
+                                token: req.headers.authorization
+                            })
+                            .then(result => {
+                                res.type('application/json');
+                                if (result.uid) {
+                                    next();
+                                } else {
+                                    res.status(401).send({
+                                        error: 'Invalid token!'
+                                    });
+                                }
+
+                                db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+                            }).catch(err => {
+                                console.error(err)
+                                db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+                                res.status(500).send({
+                                    position: "grpc catch",
+                                    error: JSON.stringify(err)
+                                })
+                            })
+                    } catch (e) {
+                        db.collection("log").insertOne({type: 'grpc-catch-all',timestamp: new Date().toISOString(),msg: e});
+                        res.status(500).send({
+                            position: "catch",
+                            error: JSON.stringify(e)
+                        })
+                    }
+                }
             });
 
             app.get('/licenseplate/all', function (req, res) {
@@ -112,49 +150,10 @@ module.exports = function (config) {
             });
 
             app.get('/hello', function (req, res) {
-                if (!req.headers.authorization) {
-                    return res.status(401).json({
-                        error: 'No credentials sent!'
-                    });
-                } else {
-                    console.log(req.headers.authorization)
-
-                    try {
-                        grpcClient.verifyUser({
-                                token: req.headers.authorization
-                            })
-                            .then(result => {
-                                console.log(result);
-
-                                res.type('application/json');
-                                res.status(200).send({
-                                    somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API'],
-                                    content: JSON.stringify(result)
-                                });
-
-                                db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
-                            }).catch(err => {
-                                console.error(err)                                
-                                db.collection("log").insertOne({type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
-                                res.status(500).send({
-                                    position: "grpc catch",
-                                    error: JSON.stringify(err)
-                                })
-                            })
-                    } catch (e) {
-                        db.collection("log").insertOne({type: 'grpc-catch-all', timestamp: new Date().toISOString(), msg: e});
-                        res.status(500).send({
-                            position: "catch",
-                            error: JSON.stringify(e)
-                        })
-                    }
-
-                    if (false) {
-                        return res.status(401).json({
-                            error: 'Invalid token!'
-                        });
-                    }
-                }
+                res.type('application/json');
+                res.status(200).send({
+                    somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']
+                });
             });
         })
         .catch(console.error)
