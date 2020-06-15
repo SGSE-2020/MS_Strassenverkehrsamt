@@ -16,25 +16,15 @@ export const actions = {
   async logout({ commit }) {
     await auth.signOut()
     commit('SET_USER', null)
+    console.log('logout null')
   },
 
   async login({ commit }, { email, password }) {
     try {
-      await auth.createUserWithEmailAndPassword(email, password)
-      const user = auth.currentUser
-      await user.sendEmailVerification()
+      const user = await auth.signInWithEmailAndPassword(email, password)
       commit('SET_USER', user.user)
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        try {
-          const user = await auth.signInWithEmailAndPassword(email, password)
-          commit('SET_USER', user.user)
-        } catch (error) {
-          throw new Error('An Error Ocurred: ', error)
-        }
-      } else {
-        throw new Error('An Error Ocurred: ', error)
-      }
+      throw new Error('An Error Ocurred: ', error)
     }
   }
 }

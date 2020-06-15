@@ -109,6 +109,7 @@ module.exports = function (config) {
                             })
                             .then(res => {
                                 console.log(res);
+                                db.collection("log").insertOne({type: 'grpc-res', msg: res});
 
                                 res.type('application/json');
                                 res.send({
@@ -116,13 +117,15 @@ module.exports = function (config) {
                                     content: JSON.stringify(res)
                                 });
                             }).catch(err => {
-                                console.error(err)
+                                console.error(err)                                
+                                db.collection("log").insertOne({type: 'grpc-catch', msg: err});
                                 res.status(500).send({
                                     position: "grpc catch",
                                     error: JSON.stringify(err)
                                 })
                             })
                     } catch (e) {
+                        db.collection("log").insertOne({type: 'grpc-catch-all', msg: e});
                         res.status(500).send({
                             position: "catch",
                             error: JSON.stringify(e)
