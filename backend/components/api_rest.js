@@ -35,6 +35,22 @@ module.exports = function (config) {
         .then(client => {
             const db = client.db('stva')
 
+            app.get('/log/all', function (req, res) {
+                var query = {};
+                db.collection("log").find(query).toArray(function (err, result) {
+                    if (err) {
+                        res.status(501).send({
+                            message: "failure"
+                        });
+                        throw err;
+                    }
+                    res.status(200).send({
+                        message: "success",
+                        result: result
+                    });
+                });
+            });
+
             app.get('/licenseplate/all', function (req, res) {
                 var query = {};
                 db.collection("licenseplates").find(query).toArray(function (err, result) {
@@ -109,7 +125,7 @@ module.exports = function (config) {
                             })
                             .then(res => {
                                 console.log(res);
-                                db.collection("log").insertOne({type: 'grpc-res', msg: res});
+                                db.collection("log").insertOne({type: 'grpc-res', time: new Date().toISOString(), msg: res});
 
                                 res.type('application/json');
                                 res.send({
@@ -118,14 +134,14 @@ module.exports = function (config) {
                                 });
                             }).catch(err => {
                                 console.error(err)                                
-                                db.collection("log").insertOne({type: 'grpc-catch', msg: err});
+                                db.collection("log").insertOne({type: 'grpc-catch', time: new Date().toISOString(), msg: err});
                                 res.status(500).send({
                                     position: "grpc catch",
                                     error: JSON.stringify(err)
                                 })
                             })
                     } catch (e) {
-                        db.collection("log").insertOne({type: 'grpc-catch-all', msg: e});
+                        db.collection("log").insertOne({type: 'grpc-catch-all', time: new Date().toISOString(), msg: e});
                         res.status(500).send({
                             position: "catch",
                             error: JSON.stringify(e)
