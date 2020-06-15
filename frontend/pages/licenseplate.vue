@@ -13,6 +13,8 @@
 </template>
 
 <script>
+const axios = require('axios')
+
 export default {
   components: {},
   data() {
@@ -23,17 +25,19 @@ export default {
   },
   computed: {},
   mounted() {
-    this.callAPI()
+    axios
+      .get('/api/licenseplate/all', {
+        headers: {
+          Authorization: this.$store.state.user.stsTokenManager.accessToken
+        }
+      })
+      .then((response) => {
+        this.licenseplates = response.data.result
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
   },
-  methods: {
-    callAPI() {
-      console.log('callAPI')
-      fetch('/api/licenseplate/all')
-        .then((response) => response.json())
-        .then((data) => {
-          this.licenseplates = data.result
-        })
-    }
-  }
+  methods: {}
 }
 </script>
