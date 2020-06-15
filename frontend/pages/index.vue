@@ -46,7 +46,7 @@ export default {
     axios
       .get('/api/hello', {
         headers: {
-          Authorization: this.$store.state.user.refreshToken
+          Authorization: this.$store.state.user.stsTokenManager.accessToken
         }
       })
       .then((response) => {
