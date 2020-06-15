@@ -10,7 +10,7 @@ const app = express();
 
 module.exports = function (config) {
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
-    const client = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
+    const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
@@ -19,31 +19,7 @@ module.exports = function (config) {
 
     app.use(function (req, res, next) {
         console.log(req.method + " " + req.url);
-        if (!req.headers.authorization) {
-            return res.status(401).json({
-                error: 'No credentials sent!'
-            });
-        } else {
-            console.log(req.headers.authorization)
-
-            client.verifyUser({
-                    token: req.headers.authorization
-                })
-                .then(res => {
-                    console.log(res);
-                    res.status(403).json({
-                        error: 'test',
-                        content: res
-                    });
-                })
-
-            if (false) {
-                return res.status(401).json({
-                    error: 'Invalid token!'
-                });
-            }
-        }
-        //next();
+        next();
     });
 
     app.get('/alive', function (req, res) {
@@ -120,10 +96,45 @@ module.exports = function (config) {
             });
 
             app.get('/hello', function (req, res) {
-                res.type('application/json');
-                res.send({
-                    somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']
-                });
+                if (!req.headers.authorization) {
+                    return res.status(401).json({
+                        error: 'No credentials sent!'
+                    });
+                } else {
+                    console.log(req.headers.authorization)
+
+                    try {
+                        grpcClient.verifyUser({
+                                token: req.headers.authorization
+                            })
+                            .then(res => {
+                                console.log(res);
+
+                                res.type('application/json');
+                                res.send({
+                                    somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API'],
+                                    content: JSON.stringify(res)
+                                });
+                            }).catch(err => {
+                                console.error(err)
+                                res.status(500).send({
+                                    position: "grpc catch",
+                                    error: JSON.stringify(err)
+                                })
+                            })
+                    } catch (e) {
+                        res.status(500).send({
+                            position: "catch",
+                            error: JSON.stringify(e)
+                        })
+                    }
+
+                    if (false) {
+                        return res.status(401).json({
+                            error: 'Invalid token!'
+                        });
+                    }
+                }
             });
         })
         .catch(console.error)
