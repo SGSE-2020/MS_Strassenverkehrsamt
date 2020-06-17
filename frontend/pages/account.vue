@@ -8,13 +8,14 @@
       <br />
       <v-card
         width="500"
-        class="mx-auto mt-5 elevation-5"
+        class="mx-auto mt-5 elevation-5 login-form"
         v-if="this.$store.state.user == null"
       >
         <v-card-title><h1 class="display-1">Login</h1></v-card-title>
         <v-card-text>
           <v-form>
             <v-text-field
+              type="email"
               label="E-Mail"
               prepend-icon="mdi-account-circle"
               v-model="formEmail"
@@ -28,6 +29,12 @@
               @click:append="showPassword = !showPassword"
             />
           </v-form>
+          <v-alert
+            v-if="this.errorMessage != null"
+            type="error"
+            v-html="this.errorMessage"
+          >
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-btn color="info" @click="loginUser()">Login</v-btn>
@@ -64,7 +71,8 @@ export default {
     return {
       showPassword: false,
       formEmail: '',
-      formPassword: ''
+      formPassword: '',
+      errorMessage: null
     }
   },
   computed: {},
@@ -77,11 +85,13 @@ export default {
           email: this.formEmail,
           password: this.formPassword
         })
-        // this.$router.push('/account')
+        // this.$router.push('/')
         console.log('success login')
         console.log(this.$store.state.user.uid)
+        this.errorMessage = null
       } catch (error) {
         this.loading = false
+        this.errorMessage = error.message
         console.error(error.message)
       }
     },
@@ -91,10 +101,13 @@ export default {
         await this.$store.dispatch('logout')
         // this.$router.push('/account')
         console.log('success logout')
-        console.log(this.$store.state.user.uid)
+        // console.log(this.$store.state.user.uid)
+        this.loading = false
+        this.errorMessage = null
       } catch (error) {
         this.loading = false
-        console.error(error.message)
+        this.errorMessage = error.message
+        console.error(error.code)
       }
     }
   }

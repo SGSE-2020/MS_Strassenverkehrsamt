@@ -53,6 +53,8 @@
 </template>
 
 <script>
+const axios = require('axios')
+
 export default {
   data() {
     return {
@@ -85,6 +87,21 @@ export default {
       right: true,
       title: 'MS_Strassenverkehrsamt'
     }
+  },
+  mounted() {
+    axios.interceptors.request.use(
+      (config) => {
+        let token = 'none'
+        if (this.$store.state.user)
+          token = this.$store.state.user.stsTokenManager.accessToken
+        config.headers.Authorization = token
+        // config.headers['Content-Type'] = 'application/json';
+        return config
+      },
+      (error) => {
+        Promise.reject(error)
+      }
+    )
   }
 }
 </script>

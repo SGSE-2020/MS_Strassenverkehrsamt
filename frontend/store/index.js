@@ -24,7 +24,8 @@ export const actions = {
       const user = await auth.signInWithEmailAndPassword(email, password)
       commit('SET_USER', user.user)
     } catch (error) {
-      throw new Error('An Error Ocurred: ', error)
+      console.log(error)
+      throw error
     }
   }
 }

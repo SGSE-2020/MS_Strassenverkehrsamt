@@ -26,11 +26,7 @@ export default {
   computed: {},
   mounted() {
     axios
-      .get('/api/licenseplate/all', {
-        headers: {
-          Authorization: this.$store.state.user.stsTokenManager.accessToken
-        }
-      })
+      .get('/api/licenseplate/all')
       .then((response) => {
         this.licenseplates = response.data.result
       })
