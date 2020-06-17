@@ -58,6 +58,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="info" @click="logoutUser()">Logout</v-btn>
+          <v-btn color="info" @click="refreshToken()">Refesh</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -109,6 +110,9 @@ export default {
         this.errorMessage = error.message
         console.error(error.code)
       }
+    },
+    async refreshToken() {
+      await this.$store.dispatch('refeshToken')
     }
   }
 }

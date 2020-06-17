@@ -27,5 +27,31 @@ export const actions = {
       console.log(error)
       throw error
     }
+  },
+
+  refeshToken({ state, commit }) {
+    try {
+      console.log(auth.currentUser)
+      auth.currentUser
+        .getIdToken(true)
+        .then(function(idToken) {
+          console.log(idToken)
+          console.log(auth.currentUser)
+          // var user = state.user
+          // user.stsTokenManager.accessToken = idToken;
+          commit('SET_USER', auth.currentUser)
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+      /*
+        state.user.getIdToken(true).then((token) => {
+          console.log(token)
+        })
+      */
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
   }
 }
