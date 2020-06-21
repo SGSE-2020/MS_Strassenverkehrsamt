@@ -4,6 +4,7 @@
   "description": "Backend API for strassenverkehrsamt",
   "main": "server.js",
   "scripts": {
+    "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dbene",
@@ -11,7 +12,9 @@
   "dependencies": {
     "@grpc/proto-loader": "^0.5.4",
     "express": "^4.17.1",
-    "grpc": "^1.24.2",
+    "google-protobuf": "^3.12.2",
+    "grpc": "^1.24.3",
+    "grpc-caller": "^0.13.0",
     "mali": "^0.20.0",
     "mongodb": "^3.5.8"
   },
