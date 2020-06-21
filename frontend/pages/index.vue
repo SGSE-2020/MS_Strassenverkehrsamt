@@ -1,17 +1,10 @@
 <template>
   <v-layout column justify-center align-center>
-    <v-card>
-      <v-card-title class="headline">
-        <span>Wilkommen beim Stra&szlig;enverkehrsamt vom SmartCity</span>
-      </v-card-title>
-    </v-card>
-    <v-flex xs12 sm8 md6>
-      <v-card v-for="item in entries" :key="item" outlined class="mb-2">
-        <v-card-title class="headline">
-          <span v-html="item"></span>
-        </v-card-title>
-      </v-card>
-    </v-flex>
+    <h1>Willkommen beim Straßenverkehrsamt von SmartCity</h1>
+    <p>
+      Loggen Sie sich mit Ihrem SmartCity Konto an um unsere Dienstleistungen in
+      Anspruch zu nehmen.
+    </p>
   </v-layout>
 </template>
 
