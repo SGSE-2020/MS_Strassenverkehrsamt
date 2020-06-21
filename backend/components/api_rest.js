@@ -4,7 +4,6 @@ const path = require('path');
 const caller = require('grpc-caller')
 
 var MongoClient = require('mongodb').MongoClient;
-var mongodbURL = "mongodb://localhost:27017/";
 
 var envType = process.env.NODE_ENV;
 if(envType == "development"){
@@ -14,6 +13,9 @@ if(envType == "development"){
 const app = express();
 
 module.exports = function (config) {
+    const applicationsRouter = require('./routers/application')(config);
+    const licenseplatesRouter = require('./routers/licenseplate')(config);
+
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
 
@@ -28,7 +30,7 @@ module.exports = function (config) {
         });
     });
 
-    MongoClient.connect(mongodbURL, {
+    MongoClient.connect(config.mongodbURL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
@@ -96,48 +98,6 @@ module.exports = function (config) {
                 });
             }
 
-            app.get('/licenseplate/all', function (req, res) {
-                var query = {};
-                db.collection("licenseplates").find(query).toArray(function (err, result) {
-                    if (err) {
-                        res.status(501).send({
-                            message: "failure"
-                        });
-                        throw err;
-                    }
-                    res.status(200).send({
-                        message: "success",
-                        result: result
-                    });
-                });
-            });
-
-            app.get('/licenseplate/:plateid', function (req, res) {
-                res.send(req.params.plateid);
-            });
-
-            app.put('/licenseplate/:plateid', function (req, response) {
-                var plate = {
-                    uid: req.params.plateid,
-                    validUntil: {
-                        year: 2022,
-                        month: 07,
-                        day: 01
-                    },
-                    isValid: true
-                }
-
-                db.collection("licenseplates").insertOne(plate, function (err, res) {
-                    if (err) {
-                        response.send('Error registering licenseplate with id ' + req.params.plateid);
-                        throw err;
-                    }
-                    response.send('Licenseplate with id ' + req.params.plateid + ' successfully registerd!');
-                });
-
-                //res.send(req.params.plateid);
-            });
-
             app.get('/mongo', function (req, res) {
                 var acc = {
                     "id": 1234,
@@ -164,6 +124,9 @@ module.exports = function (config) {
             });
         })
         .catch(console.error)
+    
+    app.use('/applications', applicationsRouter);
+    app.use('/licenseplates', licenseplatesRouter);
 
     app.listen(config.PORT_REST, function () {
         console.log('MS_Strassenverkehrsamt API listening on port ' + config.PORT_REST);

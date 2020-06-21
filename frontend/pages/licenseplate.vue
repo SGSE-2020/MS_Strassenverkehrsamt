@@ -26,7 +26,7 @@ export default {
   computed: {},
   mounted() {
     axios
-      .get('/api/licenseplate/all')
+      .get('/api/licenseplates/all')
       .then((response) => {
         this.licenseplates = response.data.result
       })
