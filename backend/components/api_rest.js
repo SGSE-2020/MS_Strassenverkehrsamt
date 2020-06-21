@@ -3,14 +3,13 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const caller = require('grpc-caller')
 
+const app = express();
 var MongoClient = require('mongodb').MongoClient;
 
 var envType = process.env.NODE_ENV;
 if(envType == "development"){
     console.log("API running in development mode. No authentication required!")
 }
-
-const app = express();
 
 module.exports = function (config) {
     const applicationsRouter = require('./routers/application')(config);
@@ -112,21 +111,17 @@ module.exports = function (config) {
                 res.send('hello mongodb');
             });
 
-            app.get('/', function (req, res) {
-                res.send('Hello World!');
-            });
-
             app.get('/hello', function (req, res) {
                 res.type('application/json');
                 res.status(200).send({
                     somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']
                 });
             });
+            
+            app.use('/applications', applicationsRouter);
+            app.use('/licenseplates', licenseplatesRouter);
         })
-        .catch(console.error)
-    
-    app.use('/applications', applicationsRouter);
-    app.use('/licenseplates', licenseplatesRouter);
+        .catch(console.error)    
 
     app.listen(config.PORT_REST, function () {
         console.log('MS_Strassenverkehrsamt API listening on port ' + config.PORT_REST);
