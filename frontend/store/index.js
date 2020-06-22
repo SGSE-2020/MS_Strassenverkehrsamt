@@ -3,52 +3,52 @@ import { auth } from '~/plugins/firebase.js'
 export const strict = false
 
 export const state = () => ({
-  user: null
+  token: false
 })
 
 export const mutations = {
-  SET_USER(state, user) {
-    state.user = user
+  SET_TOKEN(state, token) {
+    state.token = token
   }
 }
 
 export const actions = {
   async logout({ commit }) {
     await auth.signOut()
-    commit('SET_USER', null)
-    console.log('logout null')
+    commit('SET_TOKEN', false)
+    console.log('Logged out')
   },
 
   async login({ commit }, { email, password }) {
     try {
-      const user = await auth.signInWithEmailAndPassword(email, password)
-      commit('SET_USER', user.user)
+      await auth.signInWithEmailAndPassword(email, password)
+      await auth.currentUser
+        .getIdToken(false)
+        .then(function(idToken) {
+          console.log({ currentToken: idToken })
+          commit('SET_TOKEN', true)
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     } catch (error) {
       console.log(error)
       throw error
     }
   },
 
-  refeshToken({ state, commit }) {
+  async refeshToken({ commit }) {
     try {
-      console.log(auth.currentUser)
-      auth.currentUser
+      commit('SET_TOKEN', false)
+      await auth.currentUser
         .getIdToken(true)
         .then(function(idToken) {
-          console.log(idToken)
-          console.log(auth.currentUser)
-          // var user = state.user
-          // user.stsTokenManager.accessToken = idToken;
-          commit('SET_USER', auth.currentUser)
+          console.log({ currentToken: idToken })
+          commit('SET_TOKEN', true)
         })
         .catch(function(error) {
           console.log(error)
         })
-      /*
-        state.user.getIdToken(true).then((token) => {
-          console.log(token)
-        })
-      */
     } catch (error) {
       console.log(error)
       throw error

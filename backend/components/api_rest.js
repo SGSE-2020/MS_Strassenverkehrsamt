@@ -34,8 +34,12 @@ module.exports = function (config) {
             useUnifiedTopology: true
         })
         .then(client => {
+            // MongoDB Setup
             const db = client.db('stva');
-            db.collection("log").remove();
+
+            db.collection("log").drop(function(err, delOK) {
+                if (delOK) console.log("Log Collection deleted");
+            });
 
             // Logging
             app.get('/log/all', function (req, res) {

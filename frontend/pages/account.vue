@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex class="text-center">
-      <h1 v-if="this.$store.state.user == null">
+      <h1 v-if="this.$store.state.token == false">
         Melde dich mit deinem SmartCity Konto an:
       </h1>
       <h1 v-else>Du bist eingeloggt</h1>
@@ -9,7 +9,7 @@
       <v-card
         width="500"
         class="mx-auto mt-5 elevation-5 login-form"
-        v-if="this.$store.state.user == null"
+        v-if="this.$store.state.token == false"
       >
         <v-card-title><h1 class="display-1">Login</h1></v-card-title>
         <v-card-text>
@@ -45,16 +45,9 @@
       <v-card width="500" class="mx-auto mt-5 elevation-5" v-else>
         <v-card-title><h1 class="display-1">Status</h1></v-card-title>
         <v-card-text>
-          <v-text-field
-            label="E-Mail"
-            v-model="this.$store.state.user.email"
-            disabled
-          />
-          <v-text-field
-            label="UID"
-            v-model="this.$store.state.user.uid"
-            disabled
-          />
+          <v-text-field label="UID" v-model="userUID" disabled />
+          <v-text-field label="Name" v-model="userName" disabled />
+          <v-text-field label="E-Mail" v-model="userEmail" disabled />
         </v-card-text>
         <v-card-actions>
           <v-btn color="info" @click="logoutUser()">Logout</v-btn>
@@ -66,6 +59,8 @@
 </template>
 
 <script>
+import { auth } from '~/plugins/firebase.js'
+
 export default {
   components: {},
   data() {
@@ -76,7 +71,17 @@ export default {
       errorMessage: null
     }
   },
-  computed: {},
+  computed: {
+    userName() {
+      return auth.currentUser.displayName
+    },
+    userEmail() {
+      return auth.currentUser.email
+    },
+    userUID() {
+      return auth.currentUser.uid
+    }
+  },
   mounted() {},
   methods: {
     async loginUser() {
@@ -88,7 +93,7 @@ export default {
         })
         // this.$router.push('/')
         console.log('success login')
-        console.log(this.$store.state.user.uid)
+        // console.log(this.$store.state.token)
         this.errorMessage = null
       } catch (error) {
         this.loading = false
