@@ -120,12 +120,13 @@ export default {
     // Add Authorization with access token
     axios.interceptors.request.use(
       (config) => {
-        console.log('token added')
         let token = 'none'
         if (this.$store.state.loggedIn !== false)
           token = this.$store.state.token
         config.headers.Authorization = token
-        // config.headers['Content-Type'] = 'application/json';
+        console.log(
+          'Token added to request: ' + config.method + ' ' + config.url
+        )
         return config
       },
       (error) => {
