@@ -12,6 +12,8 @@ if(envType == "development"){
 }
 
 module.exports = function (config) {
+    const accountsRouter = require('./routers/account')(config);
+    const rolesRouter = require('./routers/roles')(config);
     const applicationsRouter = require('./routers/application')(config);
     const licenseplatesRouter = require('./routers/licenseplate')(config);
 
@@ -74,6 +76,7 @@ module.exports = function (config) {
                                 .then(result => {
                                     res.type('application/json');
                                     if (result.uid) {
+                                        req.headers["X-User"] = result.uid;
                                         next();
                                     } else {
                                         res.status(401).send({
@@ -99,6 +102,13 @@ module.exports = function (config) {
                         }
                     }
                 });
+            } else {
+                app.use(function (req, res, next) {
+                    console.log(req.method + " " + req.url);
+
+                    req.headers["X-User"] = "123456789";
+                    next();
+                });
             }
 
             app.get('/mongo', function (req, res) {
@@ -122,6 +132,8 @@ module.exports = function (config) {
                 });
             });
             
+            app.use('/account', accountsRouter);
+            app.use('/roles', rolesRouter);
             app.use('/applications', applicationsRouter);
             app.use('/licenseplates', licenseplatesRouter);
         })
