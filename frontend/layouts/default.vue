@@ -93,6 +93,14 @@ export default {
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Rollen',
+          to: '/roles',
+          showToAnyone: false,
+          showToUser: false,
+          showToWorker: true
         }
       ],
       miniVariant: false,
