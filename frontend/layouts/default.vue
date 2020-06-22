@@ -95,9 +95,17 @@ export default {
           showToWorker: true
         },
         {
-          icon: 'mdi-chart-bubble',
+          icon: 'mdi-account-multiple',
           title: 'Rollen',
           to: '/roles',
+          showToAnyone: false,
+          showToUser: false,
+          showToWorker: true
+        },
+        {
+          icon: 'mdi-bullhorn',
+          title: 'Ankündigungen',
+          to: '/announcements',
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
