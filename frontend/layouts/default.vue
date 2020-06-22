@@ -66,25 +66,33 @@ export default {
           icon: 'mdi-apps',
           title: 'Startseite',
           to: '/',
-          showToAnyone: true
+          showToAnyone: true,
+          showToUser: true,
+          showToWorker: true
         },
         {
           icon: 'mdi-account',
           title: 'Konto',
           to: '/account',
-          showToAnyone: true
+          showToAnyone: true,
+          showToUser: true,
+          showToWorker: true
         },
         {
           icon: 'mdi-file-document-edit',
           title: 'Anträge',
           to: '/application',
-          showToAnyone: false
+          showToAnyone: false,
+          showToUser: true,
+          showToWorker: true
         },
         {
           icon: 'mdi-chart-bubble',
           title: 'Kennzeichen',
           to: '/licenseplate',
-          showToAnyone: true
+          showToAnyone: false,
+          showToUser: false,
+          showToWorker: true
         }
       ],
       miniVariant: false,
@@ -97,7 +105,13 @@ export default {
       const menu = []
       this.items.forEach((item) => {
         if (item.showToAnyone) menu.push(item)
-        else if (this.$store.state.loggedIn !== false) menu.push(item)
+        else if (this.$store.state.loggedIn && item.showToUser) menu.push(item)
+        else if (
+          this.$store.state.loggedIn &&
+          this.$store.state.roles.includes('worker') &&
+          item.showToWorker
+        )
+          menu.push(item)
       })
       return menu
     }
