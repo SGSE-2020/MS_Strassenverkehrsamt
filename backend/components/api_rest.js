@@ -106,7 +106,7 @@ module.exports = function (config) {
                 app.use(function (req, res, next) {
                     console.log(req.method + " " + req.url);
 
-                    req.headers["X-User"] = "123456789";
+                    req.headers["X-User"] = "NqDh0ZKMVwXyVBgowVa088QKr7I2";
                     next();
                 });
             }

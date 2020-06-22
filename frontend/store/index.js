@@ -1,10 +1,12 @@
 import { auth } from '~/plugins/firebase.js'
+const axios = require('axios')
 
 export const strict = false
 
 export const state = () => ({
   loggedIn: false,
-  token: 'none'
+  token: 'none',
+  roles: []
 })
 
 export const mutations = {
@@ -13,6 +15,9 @@ export const mutations = {
   },
   SET_LOGGEDIN(state, status) {
     state.loggedIn = status
+  },
+  SET_ROLES(state, roles) {
+    state.roles = roles
   }
 }
 
@@ -21,6 +26,7 @@ export const actions = {
     await auth.signOut()
     commit('SET_TOKEN', 'none')
     commit('SET_LOGGEDIN', false)
+    commit('SET_ROLES', [])
     console.log('Logged out')
   },
 
@@ -33,6 +39,16 @@ export const actions = {
           console.log({ currentToken: idToken })
           commit('SET_TOKEN', idToken)
           commit('SET_LOGGEDIN', true)
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+
+      axios
+        .get('/api/roles/' + auth.currentUser.uid)
+        .then((response) => {
+          console.log(response.data.result.roles)
+          commit('SET_ROLES', response.data.result.roles)
         })
         .catch(function(error) {
           console.log(error)
