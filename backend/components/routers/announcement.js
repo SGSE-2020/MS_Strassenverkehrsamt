@@ -1,0 +1,128 @@
+const router = require('express').Router();
+var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
+const path = require('path');
+const caller = require('grpc-caller')
+
+module.exports = function (config) {
+  const announcementProtoPath = path.resolve(__dirname, '../../proto/announcement.proto');
+  const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, announcementProtoPath, 'AnnouncementService');
+
+  MongoClient.connect(config.mongodbURL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(client => {
+      const db = client.db('stva');
+
+      // Worker
+      router.use(function (req, res, next) {
+        db.collection("roles").findOne({
+          uid: req.headers["X-User"],
+          roles: {
+            $all: ['worker']
+          }
+        }, function (err, result) {
+          if (err) {
+            res.status(501).send({
+              message: "failure",
+              error: "database error"
+            });
+            throw err;
+          }
+
+          if (result) {
+            next();
+          } else {
+            res.status(403).send({
+              message: "failure",
+              error: "user is not a worker"
+            })
+          }
+        });
+      });
+
+      router.get('/all', function (req, res) {
+        db.collection("announcement").find({}).toArray(function (err, result) {
+          if (err) {
+            res.status(501).send({
+              message: "failure"
+            });
+            throw err;
+          } else {
+            res.status(200).send({
+              message: "success",
+              result: result
+            });
+          }
+        });
+      });
+
+      router.put('/new', function (req, res) {
+        var data = {
+          title: req.body.title,
+          text: req.body.text,
+          image: undefined,
+          service: "Straßenverkehrsamt"
+        }
+
+        grpcClient.sendAnnouncement(data)
+          .then(result => {
+            db.collection("announcement").insertOne(result, function (err, result) {
+              if (err) {
+                res.status(501).send({
+                  result: "failure",
+                  message: "database error",
+                  error: err
+                });
+                throw err;
+              } else {
+                res.status(200).send({
+                  message: "success"
+                })
+              }
+            });
+          }).catch(err => {
+            console.error(err)
+            db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+            res.status(500).send({
+              position: "grpc catch",
+              error: JSON.stringify(err)
+            })
+          })
+      });
+
+      router.delete('/:id', function (req, res) {
+        grpcClient.deleteAnnouncement({id: req.params.id, service: "Straßenverkehrsamt"})
+          .then(result => {
+            db.collection("log").insertOne({ type: 'grpc-deleteAnnouncement-status', timestamp: new Date().toISOString(), msg: result});
+            db.collection("announcement").deleteOne({
+              id: req.params.id
+            }, function (err, result) {
+              if (err) {
+                res.status(501).send({
+                  result: "failure",
+                  message: "database error",
+                  error: err
+                });
+              } else {
+                res.status(200).send({
+                  result: "success",
+                  message: result
+                })
+              }
+            });
+          }).catch(err => {
+            console.error(err)
+            db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+            res.status(500).send({
+              position: "grpc catch",
+              error: JSON.stringify(err)
+            })
+          })
+      });
+    })
+    .catch(console.error)
+
+  return router;
+}

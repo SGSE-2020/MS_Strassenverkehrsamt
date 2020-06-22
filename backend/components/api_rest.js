@@ -14,6 +14,7 @@ if(envType == "development"){
 module.exports = function (config) {
     const accountsRouter = require('./routers/account')(config);
     const rolesRouter = require('./routers/roles')(config);
+    const announcementsRouter = require('./routers/announcement')(config);
     const applicationsRouter = require('./routers/application')(config);
     const licenseplatesRouter = require('./routers/licenseplate')(config);
 
@@ -134,6 +135,7 @@ module.exports = function (config) {
             
             app.use('/account', accountsRouter);
             app.use('/roles', rolesRouter);
+            app.use('/announcements', announcementsRouter);
             app.use('/applications', applicationsRouter);
             app.use('/licenseplates', licenseplatesRouter);
         })
