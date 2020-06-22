@@ -3,19 +3,24 @@ import { auth } from '~/plugins/firebase.js'
 export const strict = false
 
 export const state = () => ({
-  token: false
+  loggedIn: false,
+  token: 'none'
 })
 
 export const mutations = {
   SET_TOKEN(state, token) {
     state.token = token
+  },
+  SET_LOGGEDIN(state, status) {
+    state.loggedIn = status
   }
 }
 
 export const actions = {
   async logout({ commit }) {
     await auth.signOut()
-    commit('SET_TOKEN', false)
+    commit('SET_TOKEN', 'none')
+    commit('SET_LOGGEDIN', false)
     console.log('Logged out')
   },
 
@@ -26,7 +31,8 @@ export const actions = {
         .getIdToken(false)
         .then(function(idToken) {
           console.log({ currentToken: idToken })
-          commit('SET_TOKEN', true)
+          commit('SET_TOKEN', idToken)
+          commit('SET_LOGGEDIN', true)
         })
         .catch(function(error) {
           console.log(error)
@@ -39,12 +45,13 @@ export const actions = {
 
   async refeshToken({ commit }) {
     try {
-      commit('SET_TOKEN', false)
+      commit('SET_LOGGEDIN', false)
       await auth.currentUser
         .getIdToken(true)
         .then(function(idToken) {
           console.log({ currentToken: idToken })
-          commit('SET_TOKEN', true)
+          commit('SET_TOKEN', idToken)
+          commit('SET_LOGGEDIN', true)
         })
         .catch(function(error) {
           console.log(error)

@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex class="text-center">
-      <h1 v-if="this.$store.state.token == false">
+      <h1 v-if="this.$store.state.loggedIn == false">
         Melde dich mit deinem SmartCity Konto an:
       </h1>
       <h1 v-else>Du bist eingeloggt</h1>
@@ -9,7 +9,7 @@
       <v-card
         width="500"
         class="mx-auto mt-5 elevation-5 login-form"
-        v-if="this.$store.state.token == false"
+        v-if="this.$store.state.loggedIn == false"
       >
         <v-card-title><h1 class="display-1">Login</h1></v-card-title>
         <v-card-text>

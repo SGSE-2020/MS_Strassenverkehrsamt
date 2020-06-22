@@ -97,7 +97,7 @@ export default {
       const menu = []
       this.items.forEach((item) => {
         if (item.showToAnyone) menu.push(item)
-        else if (this.$store.state.token === true) menu.push(item)
+        else if (this.$store.state.loggedIn !== false) menu.push(item)
       })
       return menu
     }
@@ -107,7 +107,8 @@ export default {
     axios.interceptors.request.use(
       (config) => {
         let token = 'none'
-        if (this.$store.state.token) token = this.$store.state.token.accessToken
+        if (this.$store.state.loggedIn !== false)
+          token = this.$store.state.token
         config.headers.Authorization = token
         // config.headers['Content-Type'] = 'application/json';
         return config
