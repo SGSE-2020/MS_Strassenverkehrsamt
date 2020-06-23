@@ -35,7 +35,6 @@ module.exports = function (config) {
               message: "database error, finding account",
               error: err
             });
-            throw err;
           }
 
           if (result) {
@@ -46,55 +45,71 @@ module.exports = function (config) {
             });
           } else {
             grpcClient.getUser({
-              uid: req.headers["X-User"]
-            })
-            .then(result => {
-              db.collection("accounts").insertOne({
-                "_id": req.headers["X-User"],
-                "firstName": result.firstName,
-                "lastName": result.lastName,
-                "nickName": result.nickName,
-                "email": result.email,
-                "birthDate": result.birthDate
-              }, function (err, result) {
-                if (err) {
-                  res.status(500).send({
-                    result: "failure",
-                    message: "database error, inserting account",
-                    error: err
-                  });
-                  throw err;
-                } else {
-                  // Create role for user
-                  db.collection("roles").insertOne({
-                    "_id": req.headers["X-User"],
-                    "roles": ['user']
-                  }, function (err, result) {
-                    if (err) {
-                      res.status(500).send({
-                        result: "failure",
-                        message: "database error, inserting role",
-                        error: err
-                      });
-                    } else {
-                      res.status(201).send({
-                        result: "success",
-                        message: "user created"
-                      });
-                    }
-                  });
-                }
-              });
+                uid: req.headers["X-User"]
+              })
+              .then(result => {
+                db.collection("accounts").insertOne({
+                  "_id": req.headers["X-User"],
+                  "firstName": result.firstName,
+                  "lastName": result.lastName,
+                  "nickName": result.nickName,
+                  "email": result.email,
+                  "birthDate": result.birthDate
+                }, function (err, result) {
+                  if (err) {
+                    res.status(500).send({
+                      result: "failure",
+                      message: "database error, inserting account",
+                      error: err
+                    });
+                  } else {
+                    db.collection("roles").findOne(query, function (err, result) {
+                      if (err) {
+                        res.status(500).send({
+                          result: "failure",
+                          message: "database error, finding role",
+                          error: err
+                        });
+                      }
 
-              db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
-            }).catch(err => {
-              console.error(err)
-              db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
-              res.status(500).send({
+                      if (result) {
+                        res.status(201).send({
+                          result: "success",
+                          message: "user created, role existed"
+                        });
+                      } else {
+                        // Create role for user
+                        db.collection("roles").insertOne({
+                          "_id": req.headers["X-User"],
+                          "roles": ['user']
+                        }, function (err, result) {
+                          if (err) {
+                            res.status(500).send({
+                              result: "failure",
+                              message: "database error, inserting role",
+                              error: err
+                            });
+                          } else {
+                            res.status(201).send({
+                              result: "success",
+                              message: "user and role created"
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+
+                db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+              }).catch(err => {
+                console.error(err)
+                db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+                res.status(500).send({
                   position: "grpc catch",
                   error: JSON.stringify(err)
+                })
               })
-            })
           }
         });
       });
@@ -140,7 +155,6 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-            throw err;
           }
 
           if (result) {
@@ -164,7 +178,6 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-            throw err;
           }
 
           if (result) {
