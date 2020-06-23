@@ -32,7 +32,7 @@ module.exports = function (config) {
           if (err) {
             res.status(500).send({
               result: "failure",
-              message: "database error",
+              message: "database error, finding account",
               error: err
             });
             throw err;
@@ -60,7 +60,7 @@ module.exports = function (config) {
                 if (err) {
                   res.status(500).send({
                     result: "failure",
-                    message: "database error",
+                    message: "database error, inserting account",
                     error: err
                   });
                   throw err;
@@ -73,7 +73,7 @@ module.exports = function (config) {
                     if (err) {
                       res.status(500).send({
                         result: "failure",
-                        message: "database error",
+                        message: "database error, inserting role",
                         error: err
                       });
                     } else {
