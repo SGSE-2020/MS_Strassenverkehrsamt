@@ -27,15 +27,6 @@ spec:
         volumeMounts:
           - mountPath: /data/db
             name: db
-      - image: mongo-express
-        name: ms-strassenverkehrsamt-db-ui
-        ports:
-        - containerPort: 8081
-        env:
-        - name: ME_CONFIG_MONGODB_SERVER
-          value: localhost
-        - name: ME_CONFIG_SITE_BASEURL
-          value: /mongoadmin
       restartPolicy: Always
       volumes:
         - name: db
