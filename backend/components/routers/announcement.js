@@ -25,8 +25,9 @@ module.exports = function (config) {
         }, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
             throw err;
           }
@@ -46,13 +47,15 @@ module.exports = function (config) {
         db.collection("announcement").find({}).toArray(function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure"
+              result: "failure",
+              message: "database error",
+              error: err
             });
             throw err;
           } else {
             res.status(200).send({
-              message: "success",
-              result: result
+              result: "success",
+              message: result
             });
           }
         });
@@ -78,24 +81,38 @@ module.exports = function (config) {
                 throw err;
               } else {
                 res.status(200).send({
-                  message: "success"
+                  result: "success",
+                  message: "announcement created"
                 })
               }
             });
           }).catch(err => {
             console.error(err)
-            db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+            db.collection("log").insertOne({
+              type: 'grpc-catch',
+              timestamp: new Date().toISOString(),
+              msg: err
+            });
             res.status(500).send({
-              position: "grpc catch",
-              error: JSON.stringify(err)
+              result: "failure",
+              message: "grpc error",
+              error: JSON.stringify(err),
+              position: "grpc catch"
             })
           })
       });
 
       router.delete('/:id', function (req, res) {
-        grpcClient.deleteAnnouncement({id: req.params.id, service: "Straßenverkehrsamt"})
+        grpcClient.deleteAnnouncement({
+            id: req.params.id,
+            service: "Straßenverkehrsamt"
+          })
           .then(result => {
-            db.collection("log").insertOne({ type: 'grpc-deleteAnnouncement-status', timestamp: new Date().toISOString(), msg: result});
+            db.collection("log").insertOne({
+              type: 'grpc-deleteAnnouncement-status',
+              timestamp: new Date().toISOString(),
+              msg: result
+            });
             db.collection("announcement").deleteOne({
               id: req.params.id
             }, function (err, result) {
@@ -114,10 +131,16 @@ module.exports = function (config) {
             });
           }).catch(err => {
             console.error(err)
-            db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+            db.collection("log").insertOne({
+              type: 'grpc-catch',
+              timestamp: new Date().toISOString(),
+              msg: err
+            });
             res.status(500).send({
-              position: "grpc catch",
-              error: JSON.stringify(err)
+              result: "failure",
+              message: "grpc error",
+              error: JSON.stringify(err),
+              position: "grpc catch"
             })
           })
       });

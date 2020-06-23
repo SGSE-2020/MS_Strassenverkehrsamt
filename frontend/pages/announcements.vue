@@ -22,7 +22,7 @@
               v-model="newAnnouncementText"
             />
           </v-form>
-          <v-alert type="success" :value="newAnnouncementResponse" dismissible>
+          <v-alert type="success" :value="newAnnouncementResult" dismissible>
             Ankündigungen erfolgreich erstellt!
           </v-alert>
         </v-card-text>
@@ -57,7 +57,7 @@ export default {
       announcements: [],
       newAnnouncementTitle: '',
       newAnnouncementText: '',
-      newAnnouncementResponse: null
+      newAnnouncementResult: null
     }
   },
   computed: {},
@@ -65,7 +65,7 @@ export default {
     axios
       .get('/api/announcements/all')
       .then((response) => {
-        this.announcements = response.data.result
+        this.announcements = response.data.message
       })
       .catch(function(error) {
         console.log(error)
@@ -75,7 +75,6 @@ export default {
     createAnnouncement() {
       console.log(this.newAnnouncementTitle)
       console.log(this.newAnnouncementText)
-      // this.newAnnouncementResponse = { text: this.newAnnouncementText }
 
       axios
         .put('/api/announcements/new', {
@@ -84,7 +83,7 @@ export default {
         })
         .then((response) => {
           console.log(response.data)
-          this.newAnnouncementResponse = response.data
+          this.newAnnouncementResult = response.data.result
         })
         .catch(function(error) {
           console.log(error)
