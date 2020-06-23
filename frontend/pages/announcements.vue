@@ -78,7 +78,7 @@ export default {
       // this.newAnnouncementResponse = { text: this.newAnnouncementText }
 
       axios
-        .get('/api/announcements/new', {
+        .put('/api/announcements/new', {
           title: this.newAnnouncementTitle,
           text: this.newAnnouncementText
         })
