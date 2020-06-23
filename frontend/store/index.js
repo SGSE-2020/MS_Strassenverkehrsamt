@@ -47,8 +47,8 @@ export const actions = {
       axios
         .get('/api/roles/' + auth.currentUser.uid)
         .then((response) => {
-          console.log(response.data.result.roles)
-          commit('SET_ROLES', response.data.result.roles)
+          console.log(response.data.data.roles)
+          commit('SET_ROLES', response.data.data.roles)
         })
         .catch(function(error) {
           console.log(error)
