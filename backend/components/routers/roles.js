@@ -16,7 +16,7 @@ module.exports = function (config) {
         roles: ['user', 'worker']
       }
       db.collection("roles").update({
-        "_id": data.uid
+        "_id": data._id
       }, data, {
         upsert: true
       }, function (err, result) {
