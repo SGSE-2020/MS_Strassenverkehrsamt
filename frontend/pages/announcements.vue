@@ -52,6 +52,11 @@
           <span v-html="item.title"></span>
         </v-card-title>
         <v-card-text v-html="item.text"></v-card-text>
+        <v-card-actions>
+          <v-btn color="info" @click="deleteAnnouncement(item.id)"
+            >Löschen</v-btn
+          >
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
@@ -73,10 +78,10 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getAnnouncements()
+    this.refreshAnnouncements()
   },
   methods: {
-    getAnnouncements() {
+    refreshAnnouncements() {
       axios
         .get('/api/announcements/all')
         .then((response) => {
@@ -98,7 +103,7 @@ export default {
           this.newAnnouncementTitle = ''
           this.newAnnouncementText = ''
 
-          this.getAnnouncements()
+          this.refreshAnnouncements()
         })
         .catch((error) => {
           console.log(error)
@@ -106,6 +111,19 @@ export default {
             'failure',
             'Ankündigung konnte nicht erstellt werden! Fehler im Backend.'
           )
+        })
+    },
+    deleteAnnouncement(id) {
+      console.log('delete ' + id)
+
+      axios
+        .delete('/api/announcements/' + id)
+        .then((response) => {
+          console.log(response.message)
+          this.refreshAnnouncements()
+        })
+        .catch((error) => {
+          console.log(error)
         })
     },
     setMessage(type, msg) {
