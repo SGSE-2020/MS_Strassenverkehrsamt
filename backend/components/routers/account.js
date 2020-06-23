@@ -1,7 +1,11 @@
 const router = require('express').Router();
 var MongoClient = require('mongodb').MongoClient;
+const caller = require('grpc-caller')
+const path = require('path');
 
 module.exports = function (config) {
+  const userProtoPath = path.resolve(__dirname, '../../proto/user.proto');
+  const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
 
   MongoClient.connect(config.mongodbURL, {
       useNewUrlParser: true,
@@ -22,58 +26,97 @@ module.exports = function (config) {
 
         // Check if account exists
         var query = {
-          uid: req.headers["X-User"]
+          "_id": req.headers["X-User"]
         };
         db.collection("accounts").findOne(query, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "internal error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
             throw err;
           }
 
           if (result) {
             res.status(200).send({
+              result: "success",
               message: "user found",
-              result: result
+              data: result
             });
           } else {
-            db.collection("accounts").insertOne({
-              "uid": req.headers["X-User"]
-            }, function (err, result) {
-              if (err) {
-                res.status(501).send('internal error');
-                throw err;
-              }
-
-              res.status(201).send({
-                message: "user created"
+            grpcClient.getUser({
+              uid: req.headers["X-User"]
+            })
+            .then(result => {
+              db.collection("accounts").insertOne({
+                "_id": req.headers["X-User"],
+                "firstName": result.firstName,
+                "lastName": result.lastName,
+                "nickName": result.nickName,
+                "email": result.email,
+                "birthDate": result.birthDate
+              }, function (err, result) {
+                if (err) {
+                  res.status(501).send({
+                    result: "failure",
+                    message: "database error",
+                    error: err
+                  });
+                  throw err;
+                } else {
+                  // Create role for user
+                  db.collection("roles").insertOne({
+                    "_id": req.headers["X-User"],
+                    "roles": ['user']
+                  }, function (err, result) {
+                    if (err) {
+                      res.status(501).send({
+                        result: "failure",
+                        message: "database error",
+                        error: err
+                      });
+                    } else {
+                      res.status(201).send({
+                        result: "success",
+                        message: "user created"
+                      });
+                    }
+                  });
+                }
               });
-            });
+
+              db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+            }).catch(err => {
+              console.error(err)
+              db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+              res.status(500).send({
+                  position: "grpc catch",
+                  error: JSON.stringify(err)
+              })
+            })
           }
-
-
         });
       });
 
       router.put('/my', function (req, res, next) {
         var data = {
-          uid: req.params.uid,
           firstname: req.body.firstname,
           lastname: req.body.lastname,
           nickname: req.body.nickname,
           email: req.body.email,
           birthday: req.body.birthday
         }
-        db.collection("roles").update({
-          uid: req.params.uid
+        db.collection("accounts").update({
+          "_id": req.params.uid
         }, data, {
           upsert: true
         }, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else {
             res.status(202).send({
@@ -86,15 +129,16 @@ module.exports = function (config) {
       // Worker
       router.use(function (req, res, next) {
         db.collection("roles").findOne({
-          uid: req.headers["X-User"],
+          "_id": req.headers["X-User"],
           roles: {
             $all: ['worker']
           }
         }, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
             throw err;
           }
@@ -103,8 +147,8 @@ module.exports = function (config) {
             next();
           } else {
             res.status(403).send({
-              message: "failure",
-              error: "user is not a worker"
+              result: "failure",
+              message: "user is not a worker"
             })
           }
         });
@@ -112,25 +156,26 @@ module.exports = function (config) {
 
       router.get('/:uid', function (req, res, next) {
         db.collection("accounts").findOne({
-          uid: req.params.uid
+          "_id": req.params.uid
         }, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
             throw err;
           }
 
           if (result) {
             res.status(200).send({
-              message: "success",
-              result: result
+              result: "success",
+              data: result
             })
           } else {
             res.status(404).send({
-              message: "failure",
-              error: "user not found"
+              result: "failure",
+              message: "user not found"
             })
           }
         });
@@ -138,26 +183,28 @@ module.exports = function (config) {
 
       router.put('/:uid', function (req, res, next) {
         var data = {
-          uid: req.params.uid,
           firstname: req.body.firstname,
           lastname: req.body.lastname,
           nickname: req.body.nickname,
           email: req.body.email,
           birthday: req.body.birthday
         }
-        db.collection("roles").update({
-          uid: req.params.uid
+        db.collection("accounts").update({
+          "_id": req.params.uid
         }, data, {
           upsert: true
         }, function (err, result) {
           if (err) {
             res.status(501).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else {
+            console.log(result)
             res.status(202).send({
-              message: "success"
+              result: "success",
+              message: "user updated"
             })
           }
         });

@@ -12,11 +12,11 @@ module.exports = function (config) {
 
       // NqDh0ZKMVwXyVBgowVa088QKr7I2
       var data = {
-        uid: 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
+        "_id": 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
         roles: ['user', 'worker']
       }
       db.collection("roles").update({
-        uid: data.uid
+        "_id": data.uid
       }, data, {
         upsert: true
       }, function (err, result) {
@@ -28,7 +28,7 @@ module.exports = function (config) {
       // Worker
       router.use(function (req, res, next) {
         db.collection("roles").findOne({
-          uid: req.headers["X-User"],
+          "_id": req.headers["X-User"],
           roles: {
             $all: ['worker']
           }
@@ -70,7 +70,7 @@ module.exports = function (config) {
 
       router.get('/:uid', function (req, res) {
         db.collection("roles").findOne({
-          uid: req.params.uid
+          "_id": req.params.uid
         }, function (err, result) {
           if (err) {
             res.status(501).send({
@@ -94,11 +94,11 @@ module.exports = function (config) {
 
       router.put('/:uid', function (req, res) {
         var data = {
-          uid: req.params.uid,
+          "_id": req.params.uid,
           roles: req.body.roles
         }
         db.collection("roles").update({
-          uid: req.params.uid
+          "_id": req.params.uid
         }, data, {
           upsert: true
         }, function (err, result) {

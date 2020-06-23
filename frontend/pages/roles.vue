@@ -10,7 +10,7 @@
         class="mb-2 pa-4"
       >
         <v-card-title class="headline">
-          <span v-html="item.uid"></span>
+          <span v-html="item.email"></span>
         </v-card-title>
 
         <v-select
@@ -52,27 +52,50 @@ export default {
   },
   computed: {},
   mounted() {
-    axios
-      .get('/api/roles/all')
-      .then((response) => {
-        this.rolesEntries = response.data.result
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
+    this.refreshRoles()
   },
   methods: {
-    saveRoles(role) {
-      console.log(role.uid)
-      console.log(role.roles)
-
+    refreshRoles() {
+      this.rolesEntries = []
       axios
-        .put('/api/roles/' + role.uid, {
-          uid: role.uid,
+        .get('/api/roles/all')
+        .then((response) => {
+          response.data.result.forEach((entry) => {
+            axios
+              .get('/api/account/' + entry._id)
+              .then((response) => {
+                entry.email = response.data.result.email
+                this.rolesEntries.push(entry)
+              })
+              .catch(function(error) {
+                console.log(error)
+              })
+          })
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+    saveRoles(role) {
+      axios
+        .put('/api/roles/' + role._id, {
+          _id: role._id,
           roles: role.roles
         })
         .then((response) => {
           console.log(response.data)
+          this.refreshRoles()
+        })
+        .catch(function(error) {
+          console.log(error)
+          this.refreshRoles()
+        })
+    },
+    fetchUserDetails(uid) {
+      axios
+        .get('/api/account/' + uid)
+        .then((response) => {
+          console.log(response)
         })
         .catch(function(error) {
           console.log(error)
