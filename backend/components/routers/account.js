@@ -30,7 +30,7 @@ module.exports = function (config) {
         };
         db.collection("accounts").findOne(query, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
@@ -58,7 +58,7 @@ module.exports = function (config) {
                 "birthDate": result.birthDate
               }, function (err, result) {
                 if (err) {
-                  res.status(501).send({
+                  res.status(500).send({
                     result: "failure",
                     message: "database error",
                     error: err
@@ -71,7 +71,7 @@ module.exports = function (config) {
                     "roles": ['user']
                   }, function (err, result) {
                     if (err) {
-                      res.status(501).send({
+                      res.status(500).send({
                         result: "failure",
                         message: "database error",
                         error: err
@@ -113,7 +113,7 @@ module.exports = function (config) {
           upsert: true
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
@@ -135,7 +135,7 @@ module.exports = function (config) {
           }
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
@@ -159,7 +159,7 @@ module.exports = function (config) {
           "_id": req.params.uid
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
@@ -195,7 +195,7 @@ module.exports = function (config) {
           upsert: true
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
