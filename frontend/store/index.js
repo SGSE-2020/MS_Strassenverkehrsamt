@@ -1,5 +1,4 @@
 import { auth } from '~/plugins/firebase.js'
-const axios = require('axios')
 
 export const strict = false
 
@@ -43,20 +42,14 @@ export const actions = {
         .catch(function(error) {
           console.log(error)
         })
-
-      axios
-        .get('/api/roles/my')
-        .then((response) => {
-          console.log(response.data.data.roles)
-          commit('SET_ROLES', response.data.data.roles)
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
     } catch (error) {
       console.log(error)
       throw error
     }
+  },
+
+  setRoles({ commit }, { roles }) {
+    commit('SET_ROLES', roles)
   },
 
   async refeshToken({ commit }) {

@@ -100,6 +100,15 @@ export default {
           .get('/api/account/my')
           .then((response) => {
             console.log(response.data)
+            axios
+              .get('/api/roles/my')
+              .then((response) => {
+                console.log(response.data.data.roles)
+                this.$store.dispatch('setRoles', response.data.data.roles)
+              })
+              .catch(function(error) {
+                console.log(error)
+              })
           })
           .catch(function(error) {
             console.log(error)
