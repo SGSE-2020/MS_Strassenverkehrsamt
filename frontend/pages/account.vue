@@ -59,6 +59,7 @@
 
 <script>
 import { auth } from '~/plugins/firebase.js'
+const axios = require('axios')
 
 export default {
   components: {},
@@ -94,6 +95,15 @@ export default {
         console.log('success login')
         // console.log(this.$store.state.token)
         this.errorMessage = null
+
+        axios
+          .get('/api/account/my')
+          .then((response) => {
+            console.log(response.data)
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
       } catch (error) {
         this.loading = false
         this.errorMessage = error.message
