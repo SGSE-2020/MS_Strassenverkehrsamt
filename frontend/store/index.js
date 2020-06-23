@@ -45,7 +45,7 @@ export const actions = {
         })
 
       axios
-        .get('/api/roles/' + auth.currentUser.uid)
+        .get('/api/roles/my')
         .then((response) => {
           console.log(response.data.data.roles)
           commit('SET_ROLES', response.data.data.roles)

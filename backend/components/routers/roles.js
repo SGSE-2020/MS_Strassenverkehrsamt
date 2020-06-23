@@ -25,6 +25,30 @@ module.exports = function (config) {
         }
       });
 
+      router.get('/my', function (req, res) {
+        db.collection("roles").findOne({
+          "_id": req.headers["X-User"]
+        }, function (err, result) {
+          if (err) {
+            res.status(500).send({
+              message: "failure",
+              error: "database error"
+            });
+            throw err;
+          } else if (result) {
+            res.status(200).send({
+              message: "success",
+              data: result
+            })
+          } else {
+            res.status(404).send({
+              message: "failure",
+              error: "role not found"
+            })
+          }
+        });
+      });
+
       // Worker
       router.use(function (req, res, next) {
         db.collection("roles").findOne({
@@ -34,7 +58,7 @@ module.exports = function (config) {
           }
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               message: "failure",
               error: "database error"
             });
@@ -55,7 +79,7 @@ module.exports = function (config) {
       router.get('/all', function (req, res) {
         db.collection("roles").find({}).toArray(function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               message: "failure"
             });
             throw err;
@@ -73,7 +97,7 @@ module.exports = function (config) {
           "_id": req.params.uid
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               message: "failure",
               error: "database error"
             });
@@ -86,7 +110,7 @@ module.exports = function (config) {
           } else {
             res.status(404).send({
               message: "failure",
-              error: "user not found"
+              error: "role not found"
             })
           }
         });
@@ -103,7 +127,7 @@ module.exports = function (config) {
           upsert: true
         }, function (err, result) {
           if (err) {
-            res.status(501).send({
+            res.status(500).send({
               message: "failure",
               error: "database error"
             });
