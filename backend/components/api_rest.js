@@ -64,6 +64,21 @@ module.exports = function (config) {
                 db.collection("accounts").deleteMany({}, function (err, result) {
                     if (err) {
                         console.log("error deleteing accounts")
+
+                        db.collection("accounts").insertOne({
+                            "_id": "NqDh0ZKMVwXyVBgowVa088QKr7I2",
+                            "firstName": "Fritz",
+                            "lastName": "Meier",
+                            "nickName": "Fritzy",
+                            "email": "fritz.meier@example.com",
+                            "birthDate": "12.6.1991"
+                          }, function (err, result) {
+                            if (err) {
+                                console.log("error readding init worker account")
+                            } else {
+                                console.log("success readding init worker account")
+                            }
+                          });
                     } else {
                         console.log("success deleteing accounts")
                     }
