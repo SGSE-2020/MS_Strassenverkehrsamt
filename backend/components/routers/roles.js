@@ -62,7 +62,7 @@ module.exports = function (config) {
           } else {
             res.status(200).send({
               message: "success",
-              result: result
+              data: result
             });
           }
         });
@@ -81,7 +81,7 @@ module.exports = function (config) {
           } else if (result) {
             res.status(200).send({
               message: "success",
-              result: result
+              data: result
             })
           } else {
             res.status(404).send({

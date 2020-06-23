@@ -64,7 +64,7 @@ export default {
             axios
               .get('/api/account/' + entry._id)
               .then((response) => {
-                entry.email = response.data.result.email
+                entry.email = response.data.data.email
                 this.rolesEntries.push(entry)
               })
               .catch(function(error) {
