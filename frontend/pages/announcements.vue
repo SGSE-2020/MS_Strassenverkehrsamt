@@ -22,9 +22,20 @@
               v-model="newAnnouncementText"
             />
           </v-form>
-          <v-alert type="success" :value="newAnnouncementResult" dismissible>
-            Ankündigungen erfolgreich erstellt!
-          </v-alert>
+          <v-alert
+            type="success"
+            dismissible
+            v-if="newAnnouncementResult.result === 'success'"
+            :value="newAnnouncementResult"
+            >{{ newAnnouncementResult.message }}</v-alert
+          >
+          <v-alert
+            type="error"
+            dismissible
+            v-if="newAnnouncementResult.result === 'failure'"
+            :value="newAnnouncementResult"
+            >{{ newAnnouncementResult.message }}</v-alert
+          >
         </v-card-text>
         <v-card-actions>
           <v-btn color="info" @click="createAnnouncement()">Erstellen</v-btn>
@@ -57,37 +68,51 @@ export default {
       announcements: [],
       newAnnouncementTitle: '',
       newAnnouncementText: '',
-      newAnnouncementResult: null
+      newAnnouncementResult: {}
     }
   },
   computed: {},
   mounted() {
-    axios
-      .get('/api/announcements/all')
-      .then((response) => {
-        this.announcements = response.data.message
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
+    this.getAnnouncements()
   },
   methods: {
+    getAnnouncements() {
+      axios
+        .get('/api/announcements/all')
+        .then((response) => {
+          this.announcements = response.data.message
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     createAnnouncement() {
-      console.log(this.newAnnouncementTitle)
-      console.log(this.newAnnouncementText)
-
       axios
         .put('/api/announcements/new', {
           title: this.newAnnouncementTitle,
           text: this.newAnnouncementText
         })
         .then((response) => {
-          console.log(response.data)
-          this.newAnnouncementResult = response.data.result
+          this.setMessage('success', 'Ankündigung erfolgreich erstellt')
+
+          this.newAnnouncementTitle = ''
+          this.newAnnouncementText = ''
+
+          this.getAnnouncements()
         })
-        .catch(function(error) {
+        .catch((error) => {
           console.log(error)
+          this.setMessage(
+            'failure',
+            'Ankündigung konnte nicht erstellt werden! Fehler im Backend.'
+          )
         })
+    },
+    setMessage(type, msg) {
+      this.newAnnouncementResult = {
+        result: type,
+        message: msg
+      }
     }
   }
 }
