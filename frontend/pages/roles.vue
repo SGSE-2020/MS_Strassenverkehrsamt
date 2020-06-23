@@ -60,7 +60,7 @@ export default {
       axios
         .get('/api/roles/all')
         .then((response) => {
-          response.data.result.forEach((entry) => {
+          response.data.data.forEach((entry) => {
             axios
               .get('/api/account/' + entry._id)
               .then((response) => {
