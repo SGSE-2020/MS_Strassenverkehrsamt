@@ -60,6 +60,50 @@ module.exports = function (config) {
                 });
             });
 
+            app.get('/resetdb', function (req, res) {
+                db.collection("accounts").deleteMany({}, function (err, result) {
+                    if (err) {
+                        console.log("error deleteing accounts")
+                    } else {
+                        console.log("success deleteing accounts")
+                    }
+                });
+
+                db.collection("roles").deleteMany({}, function (err, result) {
+                    if (err) {
+                        console.log("error deleteing roles")
+                    } else {
+                        console.log("success deleteing roles")
+
+                        var data = {
+                            "_id": 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
+                            roles: ['user', 'worker']
+                        }
+                        db.collection("roles").update({
+                            "_id": data._id
+                        }, data, {
+                            upsert: true
+                        }, function (err, result) {
+                            if (err) {
+                                console.log("error readding init worker")
+                            } else {
+                                console.log("success readding init worker")
+                            }
+                        });
+                    }
+                });
+
+                db.collection("announcement").deleteMany({}, function (err, result) {
+                    if (err) {
+                        console.log("error deleteing announcement")
+                    } else {
+                        console.log("success deleteing announcement")
+                    }
+                });
+
+                res.status(200).send('ok');
+            });
+
             // Auth
             if(envType != "development"){
                 app.use(function (req, res, next) {
