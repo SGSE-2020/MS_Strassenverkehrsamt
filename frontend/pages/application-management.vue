@@ -125,7 +125,9 @@ export default {
       formText: undefined,
       formType: undefined,
       formEmail: undefined,
-      formStatus: undefined
+      formStatus: undefined,
+      originStatus: undefined,
+      formId: undefined
     }
   },
   computed: {},
@@ -190,6 +192,8 @@ export default {
           this.formText = response.data.data.text
           this.formEmail = entry.email
           this.formStatus = entry.status
+          this.originStatus = entry.status
+          this.formId = entry._id
 
           this.dialog = true
         })
@@ -197,11 +201,40 @@ export default {
           console.log(error)
         })
     },
-    createApplication() {
+    async saveApplication() {
+      let statustemp = ''
+      if (this.formStatus === 'Offen') statustemp = 'open'
+      else if (this.formStatus === 'Geschlossen') statustemp = 'closed'
+      else if (this.formStatus === 'Abgelehnt') statustemp = 'denied'
+      else if (this.formStatus === 'Angenommen') statustemp = 'accepted'
+
+      await axios
+        .put('/api/applications/' + this.formId, {
+          status: statustemp
+        })
+        .then((response) => {
+          console.log(response.status)
+          if (
+            response.status === 202 &&
+            this.formStatus === 'Angenommen' &&
+            this.originStatus === 'Offen'
+          ) {
+            console.log('Offen => Angenommen')
+            if (this.formType === 'Nummernschild') {
+              // Add Nummernschild
+            } else if (this.formType === 'Umweltplakette') {
+              // Add Umweltplakette
+            } else if (this.formType === 'Führerschein') {
+              // Add Führerschein
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
       this.clearForm()
-    },
-    saveApplication() {
-      this.clearForm()
+      this.refreshApplication()
     },
     clearForm() {
       this.dialog = false

@@ -69,6 +69,16 @@
                 ></v-textarea>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-select
+                  v-model="formStatus"
+                  :items="['Offen', 'Geschlossen']"
+                  label="Status"
+                  required
+                ></v-select>
+              </v-col>
+            </v-row>
           </v-container>
           <small>*benötigte Felder</small>
         </v-card-text>
@@ -108,7 +118,7 @@
             ><v-row v-if="formType === 'Nummernschild'">
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  v-model="formPlateIdCity"
+                  v-model="defaultPlateIdCity"
                   label="Stadtkennung*"
                   required
                   readonly
@@ -184,11 +194,14 @@ export default {
         { text: 'Datum', value: 'date' }
       ],
       applications: [],
+      defaultPlateIdCity: 'SC',
       formPlateIdCity: undefined,
       formPlateIdAlpha: undefined,
       formPlateIdNumber: undefined,
       formText: undefined,
-      formType: undefined
+      formType: undefined,
+      formStatus: undefined,
+      formId: undefined
     }
   },
   computed: {},
@@ -239,6 +252,8 @@ export default {
             this.formPlateIdNumber = response.data.data.plateId.number
           }
           this.formText = response.data.data.text
+          this.formStatus = entry.status
+          this.formId = entry._id
 
           this.dialog = true
         })
@@ -249,8 +264,26 @@ export default {
     createApplication() {
       this.clearForm()
     },
-    saveApplication() {
+    async saveApplication() {
+      let statustemp = ''
+      if (this.formStatus === 'Offen') statustemp = 'open'
+      else if (this.formStatus === 'Geschlossen') statustemp = 'closed'
+      console.log(statustemp)
+
+      await axios
+        .put('/api/applications/my/' + this.formId, {
+          status: statustemp,
+          text: this.formText
+        })
+        .then((response) => {
+          console.log(response.status)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
       this.clearForm()
+      this.refreshApplication()
     },
     clearForm() {
       this.dialog = false
