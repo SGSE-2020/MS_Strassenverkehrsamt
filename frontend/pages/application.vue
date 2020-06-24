@@ -74,7 +74,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false"
+          <v-btn color="blue darken-1" text @click="clearForm()"
             >Abbrechen</v-btn
           >
           <v-btn color="blue darken-1" text @click="saveApplication()"
@@ -89,6 +89,76 @@
         >Neuer Antrag</v-btn
       >
     </div>
+    <v-dialog v-model="dialogNew" persistent max-width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Antrag</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-select
+                  v-model="formType"
+                  :items="['Nummernschild', 'Führerschein', 'Umweltplakette']"
+                  label="Typ*"
+                  required
+                ></v-select>
+              </v-col> </v-row
+            ><v-row v-if="formType === 'Nummernschild'">
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="formPlateIdCity"
+                  label="Stadtkennung*"
+                  required
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="formPlateIdAlpha"
+                  label="Buchstaben*"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="formPlateIdNumber"
+                  label="Zahl*"
+                  required
+                ></v-text-field>
+              </v-col> </v-row
+            ><v-row v-if="formType === 'Umweltplakette'">
+              <v-col cols="12" sm="6">
+                <v-select
+                  :items="['SC AB 1234', 'SC C 2005', 'SC D 6848']"
+                  label="Nummernschild*"
+                  required
+                ></v-select>
+              </v-col> </v-row
+            ><v-row>
+              <v-col cols="12">
+                <v-textarea
+                  v-model="formText"
+                  label="Text*"
+                  required
+                ></v-textarea>
+              </v-col>
+            </v-row>
+          </v-container>
+          <small>*benötigte Felder</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="clearForm()"
+            >Abbrechen</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="createApplication()"
+            >Übernehmen</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -117,7 +187,6 @@ export default {
       formPlateIdCity: undefined,
       formPlateIdAlpha: undefined,
       formPlateIdNumber: undefined,
-      formBadgeId: undefined,
       formText: undefined,
       formType: undefined
     }
@@ -156,13 +225,9 @@ export default {
         })
     },
     openApplication(entry) {
-      console.log(entry._id)
-
       axios
         .get('/api/applications/my/' + entry._id)
         .then((response) => {
-          console.log(response.data.data)
-
           this.formType = entry.type
 
           if (
@@ -181,9 +246,21 @@ export default {
           console.log(error)
         })
     },
+    createApplication() {
+      this.clearForm()
+    },
     saveApplication() {
+      this.clearForm()
+    },
+    clearForm() {
       this.dialog = false
-      console.log(this.formType)
+      this.dialogNew = false
+
+      this.formType = undefined
+      this.formText = undefined
+      this.formPlateIdCity = undefined
+      this.formPlateIdAlpha = undefined
+      this.formPlateIdNumber = undefined
     }
   }
 }
