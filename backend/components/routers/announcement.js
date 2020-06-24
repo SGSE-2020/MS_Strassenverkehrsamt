@@ -18,7 +18,7 @@ module.exports = function (config) {
       // Worker
       router.use(function (req, res, next) {
         db.collection("roles").findOne({
-          uid: req.headers["X-User"],
+          "_id": req.headers["X-User"],
           roles: {
             $all: ['worker']
           }
@@ -29,10 +29,7 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-            throw err;
-          }
-
-          if (result) {
+          } else if (result) {
             next();
           } else {
             res.status(403).send({
@@ -51,7 +48,6 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-            throw err;
           } else {
             res.status(200).send({
               result: "success",
@@ -78,7 +74,6 @@ module.exports = function (config) {
                   message: "database error",
                   error: err
                 });
-                throw err;
               } else {
                 res.status(200).send({
                   result: "success",

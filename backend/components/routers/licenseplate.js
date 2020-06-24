@@ -17,12 +17,12 @@ module.exports = function (config) {
             res.status(501).send({
               message: "failure"
             });
-            throw err;
+          } else {
+            res.status(200).send({
+              message: "success",
+              result: result
+            });
           }
-          res.status(200).send({
-            message: "success",
-            result: result
-          });
         });
       });
 
@@ -44,9 +44,9 @@ module.exports = function (config) {
         db.collection("licenseplates").insertOne(plate, function (err, res) {
           if (err) {
             response.send('Error registering licenseplate with id ' + req.params.plateid);
-            throw err;
+          } else {
+            response.send('Licenseplate with id ' + req.params.plateid + ' successfully registerd!');
           }
-          response.send('Licenseplate with id ' + req.params.plateid + ' successfully registerd!');
         });
 
         //res.send(req.params.plateid);

@@ -51,12 +51,12 @@ module.exports = function (config) {
                         res.status(501).send({
                             message: "failure"
                         });
-                        throw err;
+                    } else {
+                        res.status(200).send({
+                            message: "success",
+                            result: result
+                        });
                     }
-                    res.status(200).send({
-                        message: "success",
-                        result: result
-                    });
                 });
             });
 
@@ -170,27 +170,6 @@ module.exports = function (config) {
                     next();
                 });
             }
-
-            app.get('/mongo', function (req, res) {
-                var acc = {
-                    "id": 1234,
-                    "name": "max"
-                }
-
-                db.collection("accounts").insertOne(acc, function (err, res) {
-                    if (err) throw err;
-                    console.log("1 document inserted");
-                });
-
-                res.send('hello mongodb');
-            });
-
-            app.get('/hello', function (req, res) {
-                res.type('application/json');
-                res.status(200).send({
-                    somedata: ['Hallo', 'dies', 'sind', 'daten', 'aus', 'der', 'API']
-                });
-            });
             
             app.use('/account', accountsRouter);
             app.use('/roles', rolesRouter);

@@ -34,7 +34,6 @@ module.exports = function (config) {
               message: "failure",
               error: "database error"
             });
-            throw err;
           } else if (result) {
             res.status(200).send({
               message: "success",
@@ -62,10 +61,7 @@ module.exports = function (config) {
               message: "failure",
               error: "database error"
             });
-            throw err;
-          }
-
-          if (result) {
+          } else if (result) {
             next();
           } else {
             res.status(403).send({
@@ -82,7 +78,6 @@ module.exports = function (config) {
             res.status(500).send({
               message: "failure"
             });
-            throw err;
           } else {
             res.status(200).send({
               message: "success",
@@ -101,7 +96,6 @@ module.exports = function (config) {
               message: "failure",
               error: "database error"
             });
-            throw err;
           } else if (result) {
             res.status(200).send({
               message: "success",

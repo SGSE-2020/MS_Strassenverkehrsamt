@@ -44,7 +44,6 @@ export const actions = {
         })
     } catch (error) {
       console.log(error)
-      throw error
     }
   },
 
@@ -68,7 +67,6 @@ export const actions = {
         })
     } catch (error) {
       console.log(error)
-      throw error
     }
   }
 }
