@@ -152,7 +152,6 @@ export default {
             else if (entry.status === 'closed') newEntry.status = 'Geschlossen'
             else if (entry.status === 'denied') newEntry.status = 'Abgelehnt'
             else if (entry.status === 'accepted') newEntry.status = 'Angenommen'
-            this.formStatus = newEntry.status
 
             newEntry.date = new Date(entry.timestamp).toLocaleString()
 
@@ -162,7 +161,6 @@ export default {
               )
               if (accountResponse.status === 200) {
                 newEntry.email = accountResponse.data.data.email
-                this.formEmail = accountResponse.data.data.email
               }
             } catch (err) {
               // ignore error
@@ -190,6 +188,8 @@ export default {
             this.formPlateIdNumber = response.data.data.plateId.number
           }
           this.formText = response.data.data.text
+          this.formEmail = entry.email
+          this.formStatus = entry.status
 
           this.dialog = true
         })
