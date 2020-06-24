@@ -116,14 +116,13 @@ module.exports = function (config) {
 
       router.put('/my', function (req, res, next) {
         var data = {
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          nickname: req.body.nickname,
-          email: req.body.email,
-          birthday: req.body.birthday
+          $set: req.body
         }
+        delete data.$set['licenses'];
+        console.log(data)
+
         db.collection("accounts").update({
-          "_id": req.params.uid
+          "_id": req.headers["X-User"]
         }, data, {
           upsert: true
         }, function (err, result) {
@@ -196,12 +195,9 @@ module.exports = function (config) {
 
       router.put('/:uid', function (req, res, next) {
         var data = {
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          nickname: req.body.nickname,
-          email: req.body.email,
-          birthday: req.body.birthday
+          $set: req.body
         }
+
         db.collection("accounts").update({
           "_id": req.params.uid
         }, data, {
