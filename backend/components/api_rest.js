@@ -116,6 +116,14 @@ module.exports = function (config) {
                     }
                 });
 
+                db.collection("applications").deleteMany({}, function (err, result) {
+                    if (err) {
+                        console.log("error deleteing applications")
+                    } else {
+                        console.log("success deleteing applications")
+                    }
+                });
+
                 res.status(200).send('ok');
             });
 
