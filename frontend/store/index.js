@@ -50,6 +50,7 @@ export const actions = {
 
   setRoles({ commit }, { roles }) {
     commit('SET_ROLES', roles)
+    console.log('Roles set to: ' + JSON.stringify(roles))
   },
 
   async refeshToken({ commit }) {
