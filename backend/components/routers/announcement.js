@@ -51,7 +51,7 @@ module.exports = function (config) {
           } else {
             res.status(200).send({
               result: "success",
-              message: result
+              data: result
             });
           }
         });

@@ -31,17 +31,18 @@ module.exports = function (config) {
         }, function (err, result) {
           if (err) {
             res.status(500).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else if (result) {
             res.status(200).send({
-              message: "success",
+              result: "success",
               data: result
             })
           } else {
             res.status(404).send({
-              message: "failure",
+              result: "failure",
               error: "role not found"
             })
           }
@@ -58,15 +59,17 @@ module.exports = function (config) {
         }, function (err, result) {
           if (err) {
             res.status(500).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else if (result) {
             next();
           } else {
             res.status(403).send({
-              message: "failure",
-              error: "user is not a worker"
+              result: "failure",
+              message: "user is not a worker",
+              error: err
             })
           }
         });
@@ -76,11 +79,13 @@ module.exports = function (config) {
         db.collection("roles").find({}).toArray(function (err, result) {
           if (err) {
             res.status(500).send({
-              message: "failure"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else {
             res.status(200).send({
-              message: "success",
+              result: "success",
               data: result
             });
           }
@@ -93,18 +98,19 @@ module.exports = function (config) {
         }, function (err, result) {
           if (err) {
             res.status(500).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else if (result) {
             res.status(200).send({
-              message: "success",
+              result: "success",
               data: result
             })
           } else {
             res.status(404).send({
-              message: "failure",
-              error: "role not found"
+              result: "failure",
+              message: "role not found"
             })
           }
         });
@@ -122,12 +128,14 @@ module.exports = function (config) {
         }, function (err, result) {
           if (err) {
             res.status(500).send({
-              message: "failure",
-              error: "database error"
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else {
             res.status(202).send({
-              message: "success"
+              result: "success",
+              message: "role updated"
             })
           }
         });

@@ -85,7 +85,7 @@ export default {
       axios
         .get('/api/announcements/all')
         .then((response) => {
-          this.announcements = response.data.message
+          this.announcements = response.data.data
         })
         .catch((error) => {
           console.log(error)
