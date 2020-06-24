@@ -9,7 +9,7 @@
 </template>
 
 <script>
-const axios = require('axios')
+// const axios = require('axios')
 
 export default {
   components: {},
@@ -36,16 +36,6 @@ export default {
   },
   mounted() {
     // Display inital values
-    axios
-      .get('/api/hello')
-      .then((response) => {
-        // handle success
-        console.log(response.data.somedata)
-        this.entries = response.data.somedata
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
   },
   methods: {
     callAPI() {
