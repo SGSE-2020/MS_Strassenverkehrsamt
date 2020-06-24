@@ -261,8 +261,41 @@ export default {
           console.log(error)
         })
     },
-    createApplication() {
+    async createApplication() {
+      let typeTemp = ''
+      if (this.formType === 'Nummernschild') typeTemp = 'plate'
+      else if (this.formType === 'Umweltplakette') typeTemp = 'badge'
+      else if (this.formType === 'Führerschein') typeTemp = 'license'
+
+      const newApplication = {
+        type: typeTemp,
+        text: this.formText,
+        status: 'open'
+      }
+
+      if (
+        this.formType === 'Nummernschild' ||
+        this.formType === 'Umweltplakette'
+      ) {
+        console.log('Nummernschild/Umweltplakette')
+        newApplication.plateId = {
+          city: this.formPlateIdCity,
+          alpha: this.formPlateIdAlpha,
+          number: this.formPlateIdNumber
+        }
+      }
+
+      await axios
+        .put('/api/applications/my', newApplication)
+        .then((response) => {
+          console.log(response.status)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
       this.clearForm()
+      this.refreshApplication()
     },
     async saveApplication() {
       let statustemp = ''
