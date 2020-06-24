@@ -96,6 +96,9 @@ module.exports = function (config) {
         if(req.body.status && req.body.status === "closed"){
           console.log("status closed")
           update.$set['status'] = 'closed'
+        } else if(req.body.status && req.body.status === "open"){
+          console.log("status open")
+          update.$set['status'] = 'open'
         }
 
         db.collection("applications").updateOne({
