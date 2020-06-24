@@ -60,7 +60,7 @@ module.exports = function (config) {
                 });
             });
 
-            app.get('/resetdb', function (req, res) {
+            app.delete('/resetdb', function (req, res) {
                 db.collection("accounts").deleteMany({}, function (err, result) {
                     if (err) {
                         console.log("error deleteing accounts")
