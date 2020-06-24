@@ -118,8 +118,8 @@ module.exports = function (config) {
         var data = {
           $set: req.body
         }
-        delete data.$set['licenses'];
-        console.log(data)
+        delete data.$set['license'];
+        delete data.$set['plates'];
 
         db.collection("accounts").update({
           "_id": req.headers["X-User"]
