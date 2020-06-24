@@ -87,6 +87,14 @@ export default {
           showToWorker: true
         },
         {
+          icon: 'mdi-file-document-edit',
+          title: 'Anträge bearbeiten',
+          to: '/application-management',
+          showToAnyone: false,
+          showToUser: false,
+          showToWorker: true
+        },
+        {
           icon: 'mdi-chart-bubble',
           title: 'Kennzeichen',
           to: '/licenseplate',
