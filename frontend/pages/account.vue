@@ -104,7 +104,9 @@ export default {
               .get('/api/roles/my')
               .then((response) => {
                 console.log(response.data.data.roles)
-                this.$store.dispatch('setRoles', response.data.data.roles)
+                this.$store.dispatch('setRoles', {
+                  roles: response.data.data.roles
+                })
               })
               .catch(function(error) {
                 console.log(error)
