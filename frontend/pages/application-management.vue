@@ -83,6 +83,9 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
+          <v-btn icon :href="`mailto:${formEmail}`" color="blue darken-1">
+            <v-icon>mdi-email</v-icon>
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="clearForm()"
             >Abbrechen</v-btn
