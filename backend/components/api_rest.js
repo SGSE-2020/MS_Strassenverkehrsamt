@@ -40,9 +40,11 @@ module.exports = function (config) {
             // MongoDB Setup
             const db = client.db('stva');
 
+            /*
             db.collection("log").drop(function(err, delOK) {
                 if (delOK) console.log("Log Collection deleted");
             });
+            */
 
             // Logging
             app.get('/log/all', function (req, res) {
