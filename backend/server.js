@@ -7,24 +7,22 @@ const config = {
   mongodbURL: "mongodb://localhost:27017/"
 };
 
-MongoClient.connect(config.mongodbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(client => {
-    const db = client.db('stva');
-
-    try {
-      /* Start all components */
-      require('./components/api_rest')(config);
-      require('./components/api_grpc')(config);
-    } catch (error) {
-      console.log(error)
+process.on('uncaughtException', function (err) {
+  MongoClient.connect(config.mongodbURL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(client => {
+      const db = client.db('stva');
       db.collection("log").insertOne({
-        type: 'node-catch-all',
+        type: 'node-catch-uncaughtException',
         timestamp: new Date().toISOString(),
-        msg: error
+        msg: "uncaughtException"
       });
-    }
-  })
-  .catch(console.error)
+    })
+    .catch(console.error)
+});
+
+/* Start all components */
+require('./components/api_rest')(config);
+require('./components/api_grpc')(config);
