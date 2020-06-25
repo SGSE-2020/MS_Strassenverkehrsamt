@@ -18,18 +18,27 @@ module.exports = function (config) {
               message: "failure"
             });
           } else {
-            var plateList = []
+            try{
+              var plateList = []
 
-            result.forEach(account => {
-              account.plates.forEach(plate => {
-                plateList.push(plate)
+              result.forEach(account => {
+                account.plates.forEach(plate => {
+                  plateList.push(plate)
+                });
               });
-            });
 
-            res.status(200).send({
-              message: "success",
-              result: plateList
-            });
+              res.status(200).send({
+                message: "success",
+                result: plateList
+              });
+            } catch (err){
+              console.log(err)
+              db.collection("log").insertOne({
+                type: 'all-licenseplates-catch',
+                timestamp: new Date().toISOString(),
+                msg: error
+              });
+            }
           }
         });
       });
