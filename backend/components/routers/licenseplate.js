@@ -12,15 +12,23 @@ module.exports = function (config) {
 
       router.get('/all', function (req, res) {
         var query = {};
-        db.collection("licenseplates").find(query).toArray(function (err, result) {
+        db.collection("accounts").find(query, { projection: { plates: 1 } }).toArray(function (err, result) {
           if (err) {
             res.status(501).send({
               message: "failure"
             });
           } else {
+            var plateList = []
+
+            result.forEach(account => {
+              account.plates.forEach(plate => {
+                plateList.push(plate)
+              });
+            });
+
             res.status(200).send({
               message: "success",
-              result: result
+              result: plateList
             });
           }
         });
