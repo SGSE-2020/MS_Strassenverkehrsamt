@@ -57,9 +57,9 @@ export default {
     axios
       .get('/api/licenseplates/all')
       .then((response) => {
-        this.licenseplates = response.data.result.map(function(element) {
-          return element.plateId
-        })
+        this.licenseplates = response.data.result.map(
+          (element) => element.plateId
+        )
       })
       .catch(function(error) {
         console.log(error)
