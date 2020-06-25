@@ -50,7 +50,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="info" @click="logoutUser()">Logout</v-btn>
-          <v-btn color="info" @click="refreshToken()">Refesh Token</v-btn>
+          <v-btn color="info" @click="refreshToken()">Refresh Token</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>

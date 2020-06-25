@@ -224,11 +224,11 @@ export default {
           ) {
             console.log('Offen => Angenommen')
             if (this.formType === 'Nummernschild') {
-              // Add Nummernschild
+              // TODO Add Nummernschild
             } else if (this.formType === 'Umweltplakette') {
-              // Add Umweltplakette
+              // TODO Add Umweltplakette
             } else if (this.formType === 'Führerschein') {
-              // Add Führerschein
+              // TODO Add Führerschein
             }
           }
         })
