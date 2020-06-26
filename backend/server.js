@@ -5,6 +5,7 @@ const config = {
   PORT_REST: 8080,
   PORT_GRPC: 50051,
   mongodbURL: "mongodb://localhost:27017/",
+  MONGODB_DATABASE: "stva",
   // RABBITMQ_CONNECTION: "amqp://localhost",  
   RABBITMQ_CONNECTION: "amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/",
   RABBITMQ_EXCHANGE: "strassenverkehrsamt",
@@ -28,9 +29,18 @@ process.on('uncaughtException', function (err) {
 });
 
 /* Start all components */
-let messageService = require('./components/message_service');
-console.log("Start messaging service");
-messageService.initialize(config);
+let databaseService = require('./components/database_service');
+console.log("Start database service...");
+databaseService.initialize(config);
 
+let messageService = require('./components/message_service');
+console.log("Start messaging service...");
+messageService.initialize(config, databaseService);
+
+console.log("Start REST service...");
 require('./components/api_rest')(config, messageService);
+
+console.log("Start gRPC service...");
 require('./components/api_grpc')(config);
+
+console.log("MS_Strassenverkehrsamt running...");
