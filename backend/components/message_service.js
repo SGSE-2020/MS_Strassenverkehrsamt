@@ -15,18 +15,16 @@ exports.initialize = (config, databaseService) => {
     }).then((ch) => {
         channel = ch;
 
-        /*
         channel.assertExchange(exchange, 'fanout', {
             durable: true
         });
-        */
         
         channel.assertQueue(config.RABBITMQ_QUEUE).then((ok) => {
             return channel.consume(config.RABBITMQ_QUEUE, (msg) =>{
                 if (msg !== null) {
                     console.log("incomeing: " + msg.content.toString())
                     channel.ack(msg);
-                    db.getDB().collection("log").insertOne({type: 'incomeing-msg', timestamp: new Date().toISOString(), msg: msg.content.toString()});
+                    db.log('outgoing-msg', msg.content.toString());
                 }
             });
         });
@@ -38,5 +36,5 @@ exports.initialize = (config, databaseService) => {
 exports.publishToExchange = (routingKey, data) => {
     console.log("outgoing: " + JSON.stringify(data))
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
-    db.getDB().collection("log").insertOne({type: 'outgoing-msg', timestamp: new Date().toISOString(), msg: JSON.stringify(data)});
+    db.log('outgoing-msg', JSON.stringify(data));
 };

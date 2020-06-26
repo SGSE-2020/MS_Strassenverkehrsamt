@@ -16,3 +16,7 @@ exports.initialize = (config) => {
 exports.getDB = () => {
     return database;
 };
+
+exports.log = (type, msg) => {
+    database.collection("log").insertOne({type: type, timestamp: new Date().toISOString(), msg: msg});
+};
