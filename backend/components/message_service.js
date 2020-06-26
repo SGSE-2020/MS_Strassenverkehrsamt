@@ -24,7 +24,7 @@ exports.initialize = (config, databaseService) => {
                 if (msg !== null) {
                     console.log("incomeing: " + msg.content.toString())
                     channel.ack(msg);
-                    db.log('outgoing-msg', msg.content.toString());
+                    db.log('incomeing-msg', msg.content.toString());
                 }
             });
         });
