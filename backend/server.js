@@ -4,7 +4,10 @@ const config = {
   INTERFACE: "0.0.0.0",
   PORT_REST: 8080,
   PORT_GRPC: 50051,
-  mongodbURL: "mongodb://localhost:27017/"
+  mongodbURL: "mongodb://localhost:27017/",
+  RABBITMQ_CONNECTION: "amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/",
+  RABBITMQ_EXCHANGE: "strassenverkehrsamt",
+  RABBITMQ_QUEUE: "stva"  
 };
 
 process.on('uncaughtException', function (err) {
