@@ -26,3 +26,4 @@ process.on('uncaughtException', function (err) {
 /* Start all components */
 require('./components/api_rest')(config);
 require('./components/api_grpc')(config);
+// require('./components/messaging')(config);
