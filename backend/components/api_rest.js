@@ -11,13 +11,13 @@ if(envType == "development"){
     console.log("API running in development mode. No authentication required!")
 }
 
-module.exports = function (config) {
+module.exports = function (config, messageService) {
     const accountsRouter = require('./routers/account')(config);
     const rolesRouter = require('./routers/roles')(config);
     const announcementsRouter = require('./routers/announcement')(config);
     const applicationsRouter = require('./routers/application')(config);
     const licenseplatesRouter = require('./routers/licenseplate')(config);
-    const messagesRouter = require('./routers/messages')(config);
+    // const messagesRouter = require('./routers/messages')(config);
 
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
@@ -28,6 +28,15 @@ module.exports = function (config) {
     }));
 
     app.get('/alive', function (req, res) {
+        const data = {
+            message: '/alive',
+            timestamp: Date.now()
+        };
+
+        if (messageService != undefined && messageService != null) {
+            messageService.publishToExchange("test-routing-key", data);
+        }
+
         res.send({
             status: "alive"
         });
@@ -187,7 +196,7 @@ module.exports = function (config) {
             app.use('/announcements', announcementsRouter);
             app.use('/applications', applicationsRouter);
             app.use('/licenseplates', licenseplatesRouter);
-            app.use('/messages', messagesRouter);
+            // app.use('/messages', messagesRouter);
         })
         .catch(console.error)    
 

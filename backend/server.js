@@ -5,7 +5,8 @@ const config = {
   PORT_REST: 8080,
   PORT_GRPC: 50051,
   mongodbURL: "mongodb://localhost:27017/",
-  RABBITMQ_CONNECTION: "amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/",
+  RABBITMQ_CONNECTION: "amqp://localhost",  
+  //RABBITMQ_CONNECTION: "amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/",
   RABBITMQ_EXCHANGE: "strassenverkehrsamt",
   RABBITMQ_QUEUE: "stva"  
 };
@@ -27,6 +28,9 @@ process.on('uncaughtException', function (err) {
 });
 
 /* Start all components */
-require('./components/api_rest')(config);
+let messageService = require('./components/message_service');
+console.log("Start messaging service");
+messageService.initialize(config);
+
+require('./components/api_rest')(config, messageService);
 require('./components/api_grpc')(config);
-// require('./components/messaging')(config);
