@@ -11,7 +11,12 @@
         ></v-text-field>
       </v-col>
       <br />
-      <v-card v-for="item in filteredList" :key="item" outlined class="mb-2">
+      <v-card
+        v-for="(item, index) in filteredList"
+        :key="index"
+        outlined
+        class="mb-2"
+      >
         <v-card-title class="headline">
           <span
             v-html="item.city + ' ' + item.alpha + ' ' + item.number"

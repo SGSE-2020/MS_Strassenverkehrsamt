@@ -143,7 +143,6 @@ export default {
       axios
         .get('/api/applications/all')
         .then((response) => {
-          console.log(response.data.data.length)
           response.data.data.forEach(async (entry) => {
             const newEntry = {}
 

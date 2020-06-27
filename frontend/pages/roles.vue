@@ -4,30 +4,22 @@
       <h1>Rollen</h1>
       <br />
       <v-card
-        v-for="(item, i) in rolesEntries"
-        :key="item"
+        v-for="(entry, i) in rolesEntries"
+        :key="i"
         outlined
         class="mb-2 pa-4"
       >
         <v-card-title class="headline">
-          <span v-html="item.email"></span>
+          <span v-html="entry.email"></span>
         </v-card-title>
 
         <v-select
-          v-model="rolesEntries[i].roles"
-          :items="items"
+          v-model="entry.roles"
+          :items="roleItems"
           chips
           multiple
           label="Rollen"
         >
-          <template v-if="selectSlot" v-slot:selection="{ item, index }">
-            <v-chip v-if="index === 0">
-              <span>{{ item }}</span>
-            </v-chip>
-            <span v-if="index === 1" class="grey--text caption"
-              >(+{{ model.length - 1 }} others)</span
-            >
-          </template>
         </v-select>
 
         <v-card-actions>
@@ -47,7 +39,7 @@ export default {
     return {
       test: 'testvalue',
       rolesEntries: [],
-      items: ['user', 'worker']
+      roleItems: ['user', 'worker']
     }
   },
   computed: {},
