@@ -25,6 +25,19 @@ exports.initialize = (config, databaseService) => {
                     console.log("incomeing: " + msg.content.toString())
                     channel.ack(msg);
                     db.log('incomeing-msg', msg.content.toString());
+
+                    const dbMsg = {
+                        fields: msg.fields,
+                        properties: msg.properties,
+                        content: msg.content.toString(),
+                        timestamp: Date.now()
+                    }
+
+                    db.getDB().collection("messages").insertOne(dbMsg, function (err, result) {
+                        if (err) {
+                            console.log("error inserting incoming message into database")
+                        }
+                    });
                 }
             });
         });
@@ -35,6 +48,6 @@ exports.initialize = (config, databaseService) => {
 
 exports.publishToExchange = (routingKey, data) => {
     console.log("outgoing: " + JSON.stringify(data))
-    channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
+    channel.publish(exchange, routingKey, Buffer.from(data));
     db.log('outgoing-msg', JSON.stringify(data));
 };

@@ -117,6 +117,14 @@ export default {
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
+        },
+        {
+          icon: 'mdi-bug-outline',
+          title: 'Messages',
+          to: '/debug/messages',
+          showToAnyone: true,
+          showToUser: true,
+          showToWorker: true
         }
       ],
       miniVariant: false,

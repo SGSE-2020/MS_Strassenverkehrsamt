@@ -38,9 +38,9 @@ console.log("Start messaging service...");
 messageService.initialize(config, databaseService);
 
 console.log("Start REST service...");
-require('./components/api_rest')(config, messageService);
+require('./components/api_rest')(config, messageService, databaseService);
 
 console.log("Start gRPC service...");
-require('./components/api_grpc')(config);
+require('./components/api_grpc')(config, messageService, databaseService);
 
 console.log("MS_Strassenverkehrsamt running...");
