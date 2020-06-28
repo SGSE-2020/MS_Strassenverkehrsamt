@@ -8,20 +8,25 @@
       app
     >
       <v-list>
-        <v-list-item
-          v-for="(item, i) in activeMenu"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="(item, index) in activeMenu">
+          <v-list-item
+            :key="index"
+            :to="item.to"
+            router
+            exact
+            v-if="item.action === true"
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item :key="index" v-else-if="item.subheader">
+            <v-subheader>{{ item.title }}</v-subheader>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app class="elevation-1">
@@ -66,6 +71,7 @@ export default {
           icon: 'mdi-apps',
           title: 'Startseite',
           to: '/',
+          action: true,
           showToAnyone: true,
           showToUser: true,
           showToWorker: true
@@ -74,6 +80,7 @@ export default {
           icon: 'mdi-account',
           title: 'Konto',
           to: '/account',
+          action: true,
           showToAnyone: true,
           showToUser: true,
           showToWorker: true
@@ -82,14 +89,23 @@ export default {
           icon: 'mdi-file-document-edit',
           title: 'Anträge',
           to: '/application',
+          action: true,
           showToAnyone: false,
           showToUser: true,
+          showToWorker: true
+        },
+        {
+          title: 'Intern',
+          subheader: true,
+          showToAnyone: false,
+          showToUser: false,
           showToWorker: true
         },
         {
           icon: 'mdi-file-document-edit',
           title: 'Anträge bearbeiten',
           to: '/application-management',
+          action: true,
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
@@ -98,6 +114,7 @@ export default {
           icon: 'mdi-chart-bubble',
           title: 'Kennzeichen',
           to: '/licenseplate',
+          action: true,
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
@@ -106,6 +123,7 @@ export default {
           icon: 'mdi-account-multiple',
           title: 'Rollen',
           to: '/roles',
+          action: true,
           showToAnyone: false,
           showToUser: false,
           showToWorker: true
@@ -114,15 +132,24 @@ export default {
           icon: 'mdi-bullhorn',
           title: 'Ankündigungen',
           to: '/announcements',
+          action: true,
           showToAnyone: false,
           showToUser: false,
+          showToWorker: true
+        },
+        {
+          title: 'Debugging',
+          subheader: true,
+          showToAnyone: false,
+          showToUser: true,
           showToWorker: true
         },
         {
           icon: 'mdi-bug-outline',
           title: 'Messages',
           to: '/debug/messages',
-          showToAnyone: true,
+          action: true,
+          showToAnyone: false,
           showToUser: true,
           showToWorker: true
         }
