@@ -1,9 +1,10 @@
 <template>
-  <v-app>
+  <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
+      class="elevation-3"
       absolute
       fixed
       app
@@ -32,29 +33,41 @@
 
         <v-divider v-if="this.$store.state.account"></v-divider>
 
-        <template v-for="(item, index) in activeMenu">
-          <v-list-item
-            :key="index"
-            :to="item.to"
-            router
-            exact
-            v-if="item.action === true"
-          >
-            <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item :key="index" v-else-if="item.subheader">
-            <v-subheader v-if="!miniVariant">{{ item.title }}</v-subheader>
-            <v-divider v-else></v-divider>
-          </v-list-item>
-        </template>
+        <v-list-item-group
+          v-model="group"
+          active-class="indigo--text text--accent-4"
+        >
+          <template v-for="(item, index) in activeMenu">
+            <v-list-item
+              :key="index"
+              :to="item.to"
+              router
+              exact
+              v-if="item.action === true"
+            >
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item :key="index" v-else-if="item.subheader">
+              <v-subheader v-if="!miniVariant">{{ item.title }}</v-subheader>
+              <v-divider v-else></v-divider>
+            </v-list-item>
+          </template>
+        </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app class="elevation-1">
+    <v-app-bar
+      :clipped-left="clipped"
+      fixed
+      app
+      class="elevation-3"
+      dark
+      color="indigo accent-4"
+    >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
@@ -65,12 +78,19 @@
 
       <!--- <v-toolbar-title v-text="title" /> --->
       <v-img
-        :src="require('@/assets/banner.png')"
+        :src="require('@/assets/banner_indigo.png')"
         class="mx-2"
         max-height="50"
         max-width="397"
         contain
       />
+      <!--- <v-img
+        :src="require('@/assets/banner.png')"
+        class="mx-2"
+        max-height="50"
+        max-width="397"
+        contain
+      /> --->
       <v-spacer />
     </v-app-bar>
     <v-content>
@@ -93,9 +113,11 @@ const axios = require('axios')
 export default {
   data() {
     return {
+      title: 'MS_Strassenverkehrsamt',
       clipped: true,
       drawer: false,
       fixed: false,
+      miniVariant: false,
       items: [
         {
           icon: 'mdi-apps',
@@ -183,10 +205,7 @@ export default {
           showToUser: true,
           showToWorker: true
         }
-      ],
-      miniVariant: false,
-      right: true,
-      title: 'MS_Strassenverkehrsamt'
+      ]
     }
   },
   computed: {
@@ -260,3 +279,5 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped></style>
