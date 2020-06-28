@@ -101,7 +101,7 @@ export default {
           .then((response) => {
             console.log(response.data)
             this.$store.dispatch('setAccount', {
-              account: response.data
+              account: response.data.data
             })
 
             axios

@@ -1,13 +1,37 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
+      absolute
       fixed
       app
     >
       <v-list>
+        <v-list-item v-if="this.$store.state.account" two-line class="px-2">
+          <v-list-item-avatar>
+            <img
+              v-if="this.$store.state.account.image"
+              v-bind:src="this.$store.state.account.image"
+            />
+            <img v-else :src="require('@/assets/avatar.png')" />
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>{{
+              this.$store.state.account.firstName +
+                ' ' +
+                this.$store.state.account.lastName
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              this.$store.state.account.email
+            }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider v-if="this.$store.state.account"></v-divider>
+
         <template v-for="(item, index) in activeMenu">
           <v-list-item
             :key="index"
@@ -24,7 +48,8 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-item :key="index" v-else-if="item.subheader">
-            <v-subheader>{{ item.title }}</v-subheader>
+            <v-subheader v-if="!miniVariant">{{ item.title }}</v-subheader>
+            <v-divider v-else></v-divider>
           </v-list-item>
         </template>
       </v-list>
@@ -34,12 +59,17 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
+      <v-btn icon href="https://portal.dvess.network/">
+        <v-icon>mdi-view-dashboard</v-icon>
+      </v-btn>
 
       <!--- <v-toolbar-title v-text="title" /> --->
       <v-img
         :src="require('@/assets/banner.png')"
-        max-width="400"
-        aspect-ratio="7.94"
+        class="mx-2"
+        max-height="50"
+        max-width="397"
+        contain
       />
       <v-spacer />
     </v-app-bar>
@@ -63,7 +93,7 @@ const axios = require('axios')
 export default {
   data() {
     return {
-      clipped: false,
+      clipped: true,
       drawer: false,
       fixed: false,
       items: [
