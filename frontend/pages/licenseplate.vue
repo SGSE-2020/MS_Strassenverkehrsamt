@@ -35,18 +35,7 @@ export default {
   data() {
     return {
       test: 'testvalue',
-      licenseplates: [
-        {
-          city: 'SC',
-          alpha: 'AB',
-          number: '1234'
-        },
-        {
-          city: 'SC',
-          alpha: 'AC',
-          number: '1204'
-        }
-      ],
+      licenseplates: [],
       searchString: ''
     }
   },
