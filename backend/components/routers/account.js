@@ -54,7 +54,8 @@ module.exports = function (config) {
                   "lastName": result.lastName,
                   "nickName": result.nickName,
                   "email": result.email,
-                  "birthDate": result.birthDate
+                  "birthDate": result.birthDate,
+                  "image": result.image
                 }, function (err, result) {
                   if (err) {
                     res.status(500).send({

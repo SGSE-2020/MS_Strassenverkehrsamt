@@ -5,7 +5,8 @@ export const strict = false
 export const state = () => ({
   loggedIn: false,
   token: 'none',
-  roles: []
+  roles: [],
+  account: null
 })
 
 export const mutations = {
@@ -17,6 +18,9 @@ export const mutations = {
   },
   SET_ROLES(state, roles) {
     state.roles = roles
+  },
+  SET_ACCOUNT(state, account) {
+    state.account = account
   }
 }
 
@@ -26,6 +30,7 @@ export const actions = {
     commit('SET_TOKEN', 'none')
     commit('SET_LOGGEDIN', false)
     commit('SET_ROLES', [])
+    commit('SET_ACCOUNT', null)
     console.log('Logged out')
   },
 
@@ -51,6 +56,11 @@ export const actions = {
   setRoles({ commit }, { roles }) {
     commit('SET_ROLES', roles)
     console.log('Roles set to: ' + JSON.stringify(roles))
+  },
+
+  setAccount({ commit }, { account }) {
+    commit('SET_ACCOUNT', account)
+    console.log('Account set to: ' + JSON.stringify(account))
   },
 
   async refeshToken({ commit }) {

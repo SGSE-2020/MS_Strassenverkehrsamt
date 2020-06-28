@@ -100,6 +100,10 @@ export default {
           .get('/api/account/my')
           .then((response) => {
             console.log(response.data)
+            this.$store.dispatch('setAccount', {
+              account: response.data
+            })
+
             axios
               .get('/api/roles/my')
               .then((response) => {
