@@ -4,8 +4,6 @@
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      class="elevation-3"
-      absolute
       fixed
       app
     >
@@ -64,7 +62,7 @@
       :clipped-left="clipped"
       fixed
       app
-      class="elevation-3"
+      class="elevation-5"
       dark
       color="indigo accent-4"
     >
@@ -98,7 +96,7 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer :fixed="fixed" app>
+    <v-footer fixed app>
       <span
         >&copy; {{ new Date().getFullYear() }} Stra&szlig;enverkehrsamt
         SmartCity</span
