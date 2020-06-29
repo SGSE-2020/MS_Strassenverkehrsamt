@@ -28,15 +28,6 @@ module.exports = function (config, messageService, databaseService) {
     }));
 
     app.get('/alive', function (req, res) {
-        const data = {
-            message: '/alive',
-            timestamp: Date.now()
-        };
-
-        if (messageService != undefined && messageService != null) {
-            messageService.publishToExchange("test-routing-key", JSON.stringify(data));
-        }
-
         res.send({
             status: "alive"
         });
