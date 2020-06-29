@@ -107,24 +107,7 @@ export default {
       short_name: 'Strassenverkehrsamt',
       lang: 'de',
       background_color: "#5C6BC0",
-      description: "Die App für das Strassenverkehrsamt von SmartCity",
-      "icons": [{
-        "src": "ic_launcher_mdpi.png",
-        "sizes": "48x48",
-        "type": "image/png"
-      }, {
-        "src": "ic_launcher_hdpi.png",
-        "sizes": "72x72",
-        "type": "image/png"
-      }, {
-        "src": "ic_launcher_xxhdpi.png",
-        "sizes": "144x144",
-        "type": "image/png"
-      }, {
-        "src": "ic_launcher_xxxhdpi.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      }]
+      description: "Die App für das Strassenverkehrsamt von SmartCity"
     }
   },
   /*
