@@ -34,7 +34,7 @@ module.exports = function (config, messageService, databaseService) {
         };
 
         if (messageService != undefined && messageService != null) {
-            messageService.publishToExchange("test-routing-key", data);
+            messageService.publishToExchange("test-routing-key", JSON.stringify(data));
         }
 
         res.send({
