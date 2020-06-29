@@ -1,7 +1,7 @@
 {
   "name": "strassenverkehrsamt",
   "version": "1.0.0",
-  "description": "Webapp for Strassenverkehrsamt",
+  "description": "Die App für das Strassenverkehrsamt von SmartCity",
   "author": "dbene",
   "private": true,
   "scripts": {
