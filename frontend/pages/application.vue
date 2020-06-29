@@ -84,10 +84,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="clearForm()"
-            >Abbrechen</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="saveApplication()"
+          <v-btn color="cancel" text @click="clearForm()">Abbrechen</v-btn>
+          <v-btn color="accept" text @click="saveApplication()"
             >Übernehmen</v-btn
           >
         </v-card-actions>
@@ -95,7 +93,7 @@
     </v-dialog>
     <v-spacer />
     <div class="my-2">
-      <v-btn small color="primary" @click="dialogNew = true"
+      <v-btn small color="secondary" @click="dialogNew = true"
         >Neuer Antrag</v-btn
       >
     </div>
@@ -160,10 +158,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="clearForm()"
-            >Abbrechen</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="createApplication()"
+          <v-btn color="cancel" text @click="clearForm()">Abbrechen</v-btn>
+          <v-btn color="accept" text @click="createApplication()"
             >Übernehmen</v-btn
           >
         </v-card-actions>

@@ -38,7 +38,9 @@
           >
         </v-card-text>
         <v-card-actions>
-          <v-btn color="info" @click="createAnnouncement()">Erstellen</v-btn>
+          <v-btn color="secondary" @click="createAnnouncement()"
+            >Erstellen</v-btn
+          >
         </v-card-actions>
       </v-card>
       <br />
@@ -53,7 +55,7 @@
         </v-card-title>
         <v-card-text v-html="item.text"></v-card-text>
         <v-card-actions>
-          <v-btn color="info" @click="deleteAnnouncement(item.id)"
+          <v-btn color="error" @click="deleteAnnouncement(item.id)"
             >Löschen</v-btn
           >
         </v-card-actions>

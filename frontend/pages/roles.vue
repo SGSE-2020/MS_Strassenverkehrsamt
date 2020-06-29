@@ -23,7 +23,9 @@
         </v-select>
 
         <v-card-actions>
-          <v-btn color="info" @click="saveRoles(rolesEntries[i])">save</v-btn>
+          <v-btn color="accept lighten-1" @click="saveRoles(rolesEntries[i])"
+            >save</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-flex>

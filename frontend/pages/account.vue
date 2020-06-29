@@ -37,7 +37,7 @@
           </v-alert>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="info" @click="loginUser()">Login</v-btn>
+          <v-btn color="secondary" @click="loginUser()">Login</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -49,7 +49,7 @@
           <v-text-field label="E-Mail" v-model="userEmail" disabled />
         </v-card-text>
         <v-card-actions>
-          <v-btn color="info" @click="logoutUser()">Logout</v-btn>
+          <v-btn color="secondary" @click="logoutUser()">Logout</v-btn>
           <v-btn color="info" @click="refreshToken()">Refresh Token</v-btn>
         </v-card-actions>
       </v-card>

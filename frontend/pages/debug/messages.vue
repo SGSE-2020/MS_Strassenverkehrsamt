@@ -24,7 +24,7 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="info" @click="sendNewMessage()">Senden</v-btn>
+          <v-btn color="secondary" @click="sendNewMessage()">Senden</v-btn>
         </v-card-actions>
       </v-card>
       <br />

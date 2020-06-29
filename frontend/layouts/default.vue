@@ -31,10 +31,7 @@
 
         <v-divider v-if="this.$store.state.account"></v-divider>
 
-        <v-list-item-group
-          v-model="group"
-          active-class="indigo--text text--accent-4"
-        >
+        <v-list-item-group v-model="group" active-class="primary--text">
           <template v-for="(item, index) in activeMenu">
             <v-list-item
               :key="index"
@@ -64,7 +61,7 @@
       app
       class="elevation-5"
       dark
-      color="indigo accent-4"
+      color="primary"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
