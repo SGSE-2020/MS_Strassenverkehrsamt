@@ -77,16 +77,9 @@
         class="mx-2"
         max-height="50"
         max-width="397"
+        :aspect-ratio="1 / 8"
         contain
       />
-      <!--- <v-img
-        :src="require('@/assets/banner.png')"
-        class="mx-2"
-        max-height="50"
-        max-width="397"
-        contain
-      /> --->
-      <v-spacer />
     </v-app-bar>
     <v-content>
       <v-container>
