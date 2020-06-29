@@ -111,6 +111,8 @@ export default {
       short_name: 'Strassenverkehrsamt',
       lang: 'de',
       background_color: "#5C6BC0",
+      theme_color: "#5C6BC0",
+      display: "standalone",
       description: "Die App für das Strassenverkehrsamt von SmartCity"
     }
   },
