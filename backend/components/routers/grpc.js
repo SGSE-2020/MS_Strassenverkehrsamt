@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const caller = require('grpc-caller')
+const path = require('path');
+const caller = require('grpc-caller');
 
 module.exports = function (config, messageService, databaseService) {
     const driverslicenseProtoPath = path.resolve(__dirname, '../../proto/driverslicense.proto');
@@ -25,10 +26,10 @@ module.exports = function (config, messageService, databaseService) {
             })
         }
 
-        db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+        databaseService.getDB().collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
       }).catch(err => {
         console.error(err)
-        db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+        databaseService.getDB().collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
         res.status(500).send({
           position: "grpc catch",
           error: JSON.stringify(err)
@@ -50,10 +51,10 @@ module.exports = function (config, messageService, databaseService) {
             })
         }
 
-        db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+        databaseService.getDB().collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
       }).catch(err => {
         console.error(err)
-        db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+        databaseService.getDB().collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
         res.status(500).send({
           position: "grpc catch",
           error: JSON.stringify(err)

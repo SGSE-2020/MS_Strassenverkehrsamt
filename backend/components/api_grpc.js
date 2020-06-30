@@ -129,7 +129,6 @@ module.exports = function (config, messageService, databaseService) {
                 }
             } else {
                 // pattern does not match
-                console.log("pattern does not match")
             }
             param.res = LicensePlate;
         } catch (error) {
