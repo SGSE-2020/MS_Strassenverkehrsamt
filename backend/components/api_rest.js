@@ -18,6 +18,7 @@ module.exports = function (config, messageService, databaseService) {
     const applicationsRouter = require('./routers/application')(config);
     const licenseplatesRouter = require('./routers/licenseplate')(config);
     const messagesRouter = require('./routers/messages')(config, messageService, databaseService);
+    const grpcRouter = require('./routers/grpc')(config, messageService, databaseService);
 
     const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
     const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
@@ -188,6 +189,7 @@ module.exports = function (config, messageService, databaseService) {
             app.use('/applications', applicationsRouter);
             app.use('/licenseplates', licenseplatesRouter);
             app.use('/messages', messagesRouter);
+            app.use('/grpc', grpcRouter);
         })
         .catch(console.error)    
 
