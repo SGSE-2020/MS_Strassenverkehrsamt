@@ -9,7 +9,9 @@ const licenseplateProtoPath = path.resolve(__dirname, '../proto/licenseplate.pro
 gRpcServer.addService(driverslicenseProtoPath, 'DriversLicenseService');
 gRpcServer.addService(licenseplateProtoPath, 'LicensePlateService');
 
-module.exports = function (config) {
+var LicensePlateRegex = /^SC\s[A-Z]{1,2}\s\d{1,4}$/;
+
+module.exports = function (config, messageService, databaseService) {
 
     function getLicense(param) {
         console.log(param.req);
@@ -30,23 +32,80 @@ module.exports = function (config) {
         };
     }
 
-    function isValid(param) {        
-        console.log(param.req);
-        param.res = {
-            uid: param.req.uid,
-            validUntil: {
-                year: 2020,
-                month: 10,
-                day: 5
-            },
-            isValid: true
-        };
+    async function getLicensePlate(param) {
+        console.log("GRPC CALL: LicensePlateService -> getLicensePlate");
+
+        let LicensePlate = {
+            id: null,
+            validUntil: null,
+            isValid: null,
+            uid: null
+        }
+
+        try {
+            if (LicensePlateRegex.test(param.req.id)) {
+                // pattern matches
+
+                var parts = param.req.id.split(" ")
+                var queryPlateId = {
+                    city: parts[0],
+                    alpha: parts[1],
+                    number: parts[2]
+                }
+
+                var query = {
+                    plates: {
+                        $elemMatch: {
+                            plateId: queryPlateId
+                        }
+                    }
+                };
+
+                let result = await databaseService.getDB().collection("accounts").findOne(query, {
+                    plates: 1,
+                    _id: 1
+                });
+                if (result) {
+                    // found
+                    result.plates.forEach(plate => {
+                        if (plate.plateId.city == queryPlateId.city && plate.plateId.alpha == queryPlateId.alpha && plate.plateId.number == queryPlateId.number) {
+                            var validTest = false;
+                            if (Date.now() < plate.validUntil) {
+                                validTest = true
+                            }
+
+                            LicensePlate = {
+                                id: queryPlateId.city + " " + queryPlateId.alpha + " " + queryPlateId.number,
+                                validUntil: plate.validUntil,
+                                isValid: validTest,
+                                uid: result._id
+                            };
+                        }
+                    });
+
+                } else {
+                    // notfound
+                }
+            } else {
+                // pattern does not match
+                console.log("pattern does not match")
+            }
+            param.res = LicensePlate;
+        } catch (error) {
+            console.log("internal error")
+            param.res = {
+                id: null,
+                validUntil: null,
+                isValid: null,
+                uid: null
+            };
+        }
     }
 
     /* Launch gRPC server */
     gRpcServer.use({
         getLicense,
-        isValid
+        getLicensePlate
     });
     gRpcServer.start(config.INTERFACE + ':' + config.PORT_GRPC);
     console.log("gRPC Server running on port: " + config.PORT_GRPC);

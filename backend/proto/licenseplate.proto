@@ -2,21 +2,16 @@ syntax = "proto3";
 package licenseplate;
 
 service LicensePlateService {
-    rpc isValid(LicensePlateId) returns (LicensePlateStatus) {}
+    rpc getLicensePlate(LicensePlateId) returns (LicensePlate) {}
 }
 
 message LicensePlateId {
-    string uid = 1;
+    string id = 1;
 }
 
-message LicensePlateStatus {
-    string uid = 1;
-    Date validUntil = 2;
+message LicensePlate {
+    string id = 1;
+    int64 validUntil = 2;
     bool isValid = 3;
-}
-
-message Date{
-    int32 year = 1;
-    int32 month = 2;
-    int32 day = 3;
+    string uid = 4;
 }
