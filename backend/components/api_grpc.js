@@ -38,9 +38,7 @@ module.exports = function (config, messageService, databaseService) {
                 }
             });
 
-            if (result) {
-                console.log(result)
-                
+            if (result) {                
                 var validTest = false;
                 if (Date.now() < result.license.validUntil) {
                     validTest = true
@@ -112,7 +110,6 @@ module.exports = function (config, messageService, databaseService) {
                     }
                 });
                 if (result) {
-                    console.log(result)
                     // found
                     result.plates.forEach(plate => {
                         if (plate.plateId.city == queryPlateId.city && plate.plateId.alpha == queryPlateId.alpha && plate.plateId.number == queryPlateId.number) {
