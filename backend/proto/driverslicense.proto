@@ -2,10 +2,10 @@ syntax = "proto3";
 package driverslicense;
 
 service DriversLicenseService {
-    rpc getLicense(DriversLicenseId) returns (DriversLicense) {}
+    rpc getLicense(UserId) returns (DriversLicense) {}
 }
 
-message DriversLicenseId {
+message UserId {
     string uid = 1;
 }
 
@@ -14,7 +14,8 @@ message DriversLicense {
     string firstName = 2;
     string lastName = 3;
     Date birthDate = 4;
-    Date validUntil = 5;
+    int64 validUntil = 5;
+    bool isValid = 6;
 }
 
 message Date{

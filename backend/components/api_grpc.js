@@ -13,23 +13,67 @@ var LicensePlateRegex = /^SC\s[A-Z]{1,2}\s\d{1,4}$/;
 
 module.exports = function (config, messageService, databaseService) {
 
-    function getLicense(param) {
-        console.log(param.req);
-        param.res = {
-            uid: param.req.uid,
-            firstName: 'Max',
-            lastName: 'Mustermann',
-            birthDate: {
-                year: 1985,
-                month: 4,
-                day: 16
-            },
-            validUntil: {
-                year: 2021,
-                month: 4,
-                day: 30
-            }
+    async function getLicense(param) {
+        console.log("GRPC CALL: DriversLicenseService -> getLicense");
+
+        let DriversLicense = {
+            uid: null,
+            firstName: null,
+            lastName: null,
+            birthDate: null,
+            validUntil: null,
+            isValid: null
         };
+
+        try {
+
+            let result = await databaseService.getDB().collection("accounts").findOne({
+                _id: param.req.uid
+            }, {
+                projection: {
+                    license: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    birthDate: 1
+                }
+            });
+
+            if (result) {
+                console.log(result)
+                
+                var validTest = false;
+                if (Date.now() < result.license.validUntil) {
+                    validTest = true
+                }
+
+                var birthDate = new Date(result.birthDate)
+
+                DriversLicense = {
+                    uid: param.req.uid,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    birthDate: {
+                        year: birthDate.getFullYear(),
+                        month: birthDate.getMonth() + 1,
+                        day: birthDate.getDate()
+                    },
+                    validUntil: result.license.validUntil,
+                    isValid: validTest
+                };
+            }
+
+            param.res = DriversLicense;
+        } catch (error) {            
+            console.log("internal error")
+            param.res = {
+                uid: null,
+                firstName: null,
+                lastName: null,
+                birthDate: null,
+                validUntil: null,
+                isValid: null
+            };
+        }
     }
 
     async function getLicensePlate(param) {
@@ -62,10 +106,13 @@ module.exports = function (config, messageService, databaseService) {
                 };
 
                 let result = await databaseService.getDB().collection("accounts").findOne(query, {
-                    plates: 1,
-                    _id: 1
+                    projection: {
+                        plates: 1,
+                        _id: 1
+                    }
                 });
                 if (result) {
+                    console.log(result)
                     // found
                     result.plates.forEach(plate => {
                         if (plate.plateId.city == queryPlateId.city && plate.plateId.alpha == queryPlateId.alpha && plate.plateId.number == queryPlateId.number) {
@@ -82,9 +129,6 @@ module.exports = function (config, messageService, databaseService) {
                             };
                         }
                     });
-
-                } else {
-                    // notfound
                 }
             } else {
                 // pattern does not match
