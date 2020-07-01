@@ -1,4 +1,6 @@
 const amqplib = require('amqplib');
+const caller = require('grpc-caller');
+const path = require('path');
 
 let channel = null;
 let exchange = null;
@@ -8,6 +10,9 @@ exports.initialize = (config, databaseService) => {
     db = databaseService;
     exchange = config.RABBITMQ_EXCHANGE;
     var connection = amqplib.connect(config.RABBITMQ_CONNECTION);
+
+    const userProtoPath = path.resolve(__dirname, '../proto/user.proto');
+    const grpcClient = caller('ms-buergerbuero:' + config.PORT_GRPC, userProtoPath, 'UserService');
 
     connection.then((conn) => {
         return conn.createChannel();
@@ -37,18 +42,48 @@ exports.initialize = (config, databaseService) => {
                             console.log("error inserting incoming message into database")
                         }
                     });
-                    
-                    if (msg.fields.exchange == "buergerbuero" && msg.fields.routingKey == "daten.geaendert") {
-                        db.log('incomeing-msg-content-1', {
-                            type: "data changed"
-                        });
 
+                    if (msg.fields.exchange == "buergerbuero" && msg.fields.routingKey == "daten.geaendert") {
                         var msgJSON = JSON.parse(dbMsg.content);
-                        db.log('incomeing-msg-content-2', {
-                            msgJSON: msgJSON,
-                            type: "data changed",
-                            uid: msgJSON.uid
-                        });
+
+                        grpcClient.getUser({
+                                uid: msgJSON.uid
+                            })
+                            .then(resultAccount => {
+                                var update = {
+                                    $set: {
+                                        firstName: resultAccount.firstName,
+                                        lastName: resultAccount.lastName,
+                                        nickName: resultAccount.nickName,
+                                        email: resultAccount.email,
+                                        birthDate: resultAccount.birthDate,
+                                        image: resultAccount.image
+                                    }
+                                }
+
+                                databaseService.getDB().collection("accounts").updateOne({
+                                    "_id": msgJSON.uid
+                                }, update, function (err, resultDBUpdateAccount) {
+                                    if (err) {
+                                        databaseService.log('user-updated', {
+                                            result: "failure",
+                                            uid: msgJSON.uid,
+                                            error: err
+                                        });
+                                    } else {
+                                        databaseService.log('user-updated', {
+                                            result: "success",
+                                            uid: msgJSON.uid
+                                        });
+                                    }
+                                });
+                            }).catch(err => {
+                                databaseService.log('user-updated', {
+                                    result: "failure",
+                                    uid: msgJSON.uid,
+                                    error: err
+                                });
+                            })
                     }
                 }
             });
