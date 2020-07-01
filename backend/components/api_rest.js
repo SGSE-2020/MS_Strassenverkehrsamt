@@ -12,11 +12,11 @@ if(envType == "development"){
 }
 
 module.exports = function (config, messageService, databaseService) {
-    const accountsRouter = require('./routers/account')(config);
-    const rolesRouter = require('./routers/roles')(config);
-    const announcementsRouter = require('./routers/announcement')(config);
-    const applicationsRouter = require('./routers/application')(config);
-    const licenseplatesRouter = require('./routers/licenseplate')(config);
+    const accountsRouter = require('./routers/account')(config, messageService, databaseService);
+    const rolesRouter = require('./routers/roles')(config, messageService, databaseService);
+    const announcementsRouter = require('./routers/announcement')(config, messageService, databaseService);
+    const applicationsRouter = require('./routers/application')(config, messageService, databaseService);
+    const licenseplatesRouter = require('./routers/licenseplate')(config, messageService, databaseService);
     const messagesRouter = require('./routers/messages')(config, messageService, databaseService);
     const grpcRouter = require('./routers/grpc')(config, messageService, databaseService);
 
