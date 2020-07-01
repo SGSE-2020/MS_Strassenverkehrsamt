@@ -61,21 +61,22 @@ module.exports = function (config, messageService, databaseService) {
   router.post('/my/shorttermplate', function (req, res, next) {
     // get money
     grpcClientAccount.getIban({
-        user_id: req.headers["X-User"]
+        userId: req.headers["X-User"]
       })
-      .then(resultIBAN => {
-        if (resultIBAN) {
-          databaseService.getDB().collection("log").insertOne({
-            type: 'grpc-bank-resultIBAN',
-            msg: resultIBAN
-          });
+      .then(resultBankAccount => {
+        databaseService.getDB().collection("log").insertOne({
+          type: 'grpc-bank-resultBankAccount',
+          timestamp: new Date().toISOString(),
+          msg: resultBankAccount
+        });
 
+        if (resultBankAccount) {
           grpcClientAccount.transfer({
-              user_id: req.headers["X-User"],
-              iban: resultIBAN.iban,
+              iban: resultBankAccount.iban,
               purpose: "STVA - Kurzzeitkennzeichen",
-              dest_iban: config.STVA_IBAN,
-              amount: "25"
+              destIban: config.STVA_IBAN,
+              amount: "25",
+              userId: req.headers["X-User"],
             })
             .then(resultTransfer => {
               if (resultTransfer) {
@@ -156,7 +157,7 @@ module.exports = function (config, messageService, databaseService) {
           res.status(500).send({
             result: "failure",
             message: "internal error ",
-            other: resultIBAN
+            other: resultBankAccount
           })
           databaseService.getDB().collection("log").insertOne({
             type: 'grpc-res-error',
