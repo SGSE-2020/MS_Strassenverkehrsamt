@@ -87,14 +87,57 @@
             <v-icon>mdi-email</v-icon>
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="cancel" text @click="deleteApplication()"
+          <v-btn
+            color="cancel"
+            text
+            @click="
+              openConfirmationDialog(
+                'Löschen',
+                'Wollen Sie den Antrag löschen?',
+                deleteApplication
+              )
+            "
             >Löschen</v-btn
           >
           <v-spacer></v-spacer>
           <v-btn color="cancel" text @click="clearForm()">Abbrechen</v-btn>
-          <v-btn color="accept" text @click="saveApplication()"
+          <v-btn
+            color="accept"
+            text
+            @click="
+              openConfirmationDialog(
+                'Speichern',
+                'Wollen Sie den Antrag speichern?',
+                saveApplication
+              )
+            "
             >Übernehmen</v-btn
           >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="confirmDialog" max-width="300">
+      <v-card>
+        <v-card-title class="headline">{{ confirmDialogTitle }}</v-card-title>
+        <v-card-text>
+          {{ confirmDialogText }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="cancel" text @click="closeConfirmationDialog()">
+            Abbrechen
+          </v-btn>
+          <v-btn
+            color="accept"
+            text
+            @click="
+              confirmDialogBtnConfirm()
+              closeConfirmationDialog()
+            "
+          >
+            Bestätigen
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -132,7 +175,11 @@ export default {
       formEmail: undefined,
       formStatus: undefined,
       originStatus: undefined,
-      formId: undefined
+      formId: undefined,
+      confirmDialog: false,
+      confirmDialogTitle: undefined,
+      confirmDialogText: undefined,
+      confirmDialogBtnConfirm: undefined
     }
   },
   computed: {},
@@ -264,6 +311,18 @@ export default {
 
       this.clearForm()
       this.refreshApplication()
+    },
+    openConfirmationDialog(title, text, confirm) {
+      this.confirmDialog = true
+      this.confirmDialogTitle = title
+      this.confirmDialogText = text
+      this.confirmDialogBtnConfirm = confirm
+    },
+    closeConfirmationDialog() {
+      this.confirmDialog = false
+      this.confirmDialogTitle = undefined
+      this.confirmDialogText = undefined
+      this.confirmDialogBtnConfirm = undefined
     }
   }
 }
