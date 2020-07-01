@@ -70,12 +70,12 @@ module.exports = function (config, messageService, databaseService) {
                         console.log("error deleteing accounts")
 
                         db.collection("accounts").insertOne({
-                            "_id": "NqDh0ZKMVwXyVBgowVa088QKr7I2",
-                            "firstName": "Fritz",
-                            "lastName": "Meier",
-                            "nickName": "Fritzy",
-                            "email": "fritz.meier@example.com",
-                            "birthDate": "12.6.1991"
+                            "_id": "2WWhXXQsd1fC0a4SD16WjaI3hrq2",
+                            "firstName": "Der",
+                            "lastName": "Admin",
+                            "nickName": "admin",
+                            "email": "admin@stva.com",
+                            "birthDate": "01.01.1970"
                           }, function (err, result) {
                             if (err) {
                                 console.log("error readding init worker account")
@@ -95,7 +95,7 @@ module.exports = function (config, messageService, databaseService) {
                         console.log("success deleteing roles")
 
                         var data = {
-                            "_id": 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
+                            "_id": '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
                             roles: ['user', 'worker']
                         }
                         db.collection("roles").update({
@@ -178,7 +178,7 @@ module.exports = function (config, messageService, databaseService) {
                 app.use(function (req, res, next) {
                     console.log(req.method + " " + req.url);
 
-                    req.headers["X-User"] = "NqDh0ZKMVwXyVBgowVa088QKr7I2";
+                    req.headers["X-User"] = "2WWhXXQsd1fC0a4SD16WjaI3hrq2";
                     next();
                 });
             }

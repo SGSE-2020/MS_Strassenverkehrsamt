@@ -10,9 +10,9 @@ module.exports = function (config) {
     .then(client => {
       const db = client.db('stva');
 
-      // NqDh0ZKMVwXyVBgowVa088QKr7I2
+      // 2WWhXXQsd1fC0a4SD16WjaI3hrq2
       var data = {
-        "_id": 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
+        "_id": '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
         roles: ['user', 'worker']
       }
       db.collection("roles").update({

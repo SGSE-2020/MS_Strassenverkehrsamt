@@ -57,7 +57,7 @@ export default {
       messages: [],
       licenseplateID: 'SC AB 1234',
       licenseplateResponse: '',
-      driverslicenseUID: 'NqDh0ZKMVwXyVBgowVa088QKr7I2',
+      driverslicenseUID: '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
       driverslicenseResponse: ''
     }
   },
