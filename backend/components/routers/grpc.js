@@ -83,22 +83,24 @@ module.exports = function (config, messageService, databaseService) {
 
   router.post('/announcement', function (req, res) {
     grpcClientAnnouncement.sendAnnouncement(req.body)
-      .then(result => {
+      .then(resultAnnouncement => {
         databaseService.getDB().collection("announcement").insertOne(result, function (err, result) {
           if (err) {
             res.status(501).send({
               result: "failure",
               message: "database error",
-              error: err
+              error: err,
+              trace: console.trace()
             });
           } else {
             databaseService.getDB().log('announcement-send', {
-              content: result
+              content: resultAnnouncement
             });
 
             res.status(200).send({
               result: "success",
-              message: "announcement created"
+              message: "announcement created",
+              announcement: resultAnnouncement
             })
           }
         });
@@ -107,13 +109,15 @@ module.exports = function (config, messageService, databaseService) {
         databaseService.getDB().collection("log").insertOne({
           type: 'grpc-catch',
           timestamp: new Date().toISOString(),
-          msg: err
+          msg: err,
+          trace: console.trace()
         });
         res.status(500).send({
           result: "failure",
           message: "grpc error",
           error: JSON.stringify(err),
-          position: "grpc catch"
+          position: "grpc catch",
+          trace: console.trace()
         })
       })
   });

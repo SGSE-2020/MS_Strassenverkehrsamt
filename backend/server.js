@@ -14,6 +14,8 @@ const config = {
 };
 
 process.on('uncaughtException', function (err) {
+  console.trace()
+
   MongoClient.connect(config.mongodbURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true
