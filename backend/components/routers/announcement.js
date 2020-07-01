@@ -70,6 +70,17 @@ module.exports = function (config, messageService, databaseService) {
               result: "success",
               message: "announcement created"
             })
+
+            messageService.publishToExchange("", {
+              origin: "ms-strassenverkehrsamt",
+              event: {
+                type: "announcement",
+                content: {
+                  titel: data.title,
+                  text: data.text
+                }
+              }
+            })
           }
         });
       }).catch(err => {
