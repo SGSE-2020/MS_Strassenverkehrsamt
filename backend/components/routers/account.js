@@ -56,7 +56,7 @@ module.exports = function (config) {
                   "email": result.email,
                   "birthDate": result.birthDate,
                   "image": result.image
-                }, function (err, result) {
+                }, function (err, resultInsertAccount) {
                   if (err) {
                     res.status(500).send({
                       result: "failure",
@@ -64,7 +64,7 @@ module.exports = function (config) {
                       error: err
                     });
                   } else {
-                    db.collection("roles").findOne(query, function (err, result) {
+                    db.collection("roles").findOne(query, function (err, resultFindRole) {
                       if (err) {
                         res.status(500).send({
                           result: "failure",
@@ -83,7 +83,7 @@ module.exports = function (config) {
                         db.collection("roles").insertOne({
                           "_id": req.headers["X-User"],
                           "roles": ['user']
-                        }, function (err, result) {
+                        }, function (err, resultInsertRole) {
                           if (err) {
                             res.status(500).send({
                               result: "failure",
@@ -94,7 +94,7 @@ module.exports = function (config) {
                             res.status(201).send({
                               result: "success",
                               message: "user and role created",
-                              data: result.ops[0]
+                              data: resultInsertAccount.ops[0]
                             });
                           }
                         });

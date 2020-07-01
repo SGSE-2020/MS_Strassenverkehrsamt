@@ -14,7 +14,7 @@ message DriversLicense {
     string firstName = 2;
     string lastName = 3;
     Date birthDate = 4;
-    int64 validUntil = 5;
+    int32 validUntil = 5;
     bool isValid = 6;
 }
 

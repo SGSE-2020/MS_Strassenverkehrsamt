@@ -55,7 +55,7 @@ export default {
     return {
       test: 'testvalue',
       messages: [],
-      licenseplateID: 'SC AB 1234',
+      licenseplateID: 'SC RT 1337',
       licenseplateResponse: '',
       driverslicenseUID: '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
       driverslicenseResponse: ''
