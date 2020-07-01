@@ -1,5 +1,4 @@
 const router = require('express').Router();
-var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 const caller = require('grpc-caller')
 const path = require('path');
