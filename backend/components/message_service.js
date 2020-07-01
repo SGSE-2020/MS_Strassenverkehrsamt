@@ -37,15 +37,15 @@ exports.initialize = (config, databaseService) => {
                             console.log("error inserting incoming message into database")
                         }
                     });
-
-                    if (dbMsg.fields.exchange == "buergerbuero" && dbMsg.fields.routingKey == "daten.geaendert") {
-                        var msgJSON = JSON.parse(dbMsg.content);
-                        db.log('incomeing-msg', {
-                            msgJSON: msgJSON,
-                            type: "data changed",
-                            uid: msgJSON.uid
-                        });
-                    }
+                    
+                    // if (dbMsg.fields.exchange == "buergerbuero" && dbMsg.fields.routingKey == "daten.geaendert") {
+                    //     var msgJSON = JSON.parse(dbMsg.content);
+                    //     db.log('incomeing-msg', {
+                    //         msgJSON: msgJSON,
+                    //         type: "data changed",
+                    //         uid: msgJSON.uid
+                    //     });
+                    // }
                 }
             });
         });
