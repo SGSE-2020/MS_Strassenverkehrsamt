@@ -19,7 +19,8 @@
     "grpc-caller": "^0.13.0",
     "mali": "^0.20.0",
     "mocha": "^8.0.1",
-    "mongodb": "^3.5.8"
+    "mongodb": "^3.5.8",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
