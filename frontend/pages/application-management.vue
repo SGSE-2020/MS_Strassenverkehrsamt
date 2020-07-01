@@ -87,6 +87,10 @@
             <v-icon>mdi-email</v-icon>
           </v-btn>
           <v-spacer></v-spacer>
+          <v-btn color="cancel" text @click="deleteApplication()"
+            >Löschen</v-btn
+          >
+          <v-spacer></v-spacer>
           <v-btn color="cancel" text @click="clearForm()">Abbrechen</v-btn>
           <v-btn color="accept" text @click="saveApplication()"
             >Übernehmen</v-btn
@@ -247,6 +251,19 @@ export default {
       this.formPlateIdCity = undefined
       this.formPlateIdAlpha = undefined
       this.formPlateIdNumber = undefined
+    },
+    async deleteApplication() {
+      await axios
+        .delete('/api/applications/' + this.formId)
+        .then((response) => {
+          console.log(response.status)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      this.clearForm()
+      this.refreshApplication()
     }
   }
 }

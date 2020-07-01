@@ -249,6 +249,29 @@ module.exports = function (config) {
         });
       });
 
+      router.delete('/:id', function (req, res, next) {
+        db.collection("applications").deleteOne({
+          "_id": ObjectId(req.params.id)
+        }, function (err, result) {
+          if (err) {
+            res.status(500).send({
+              result: "failure",
+              message: "database error",
+              error: err
+            });
+          } else if (result.result.nModified == 1) {
+            res.status(200).send({
+              message: "success, application deleted"
+            })
+          } else {
+            res.status(404).send({
+              result: "failure",
+              message: "application not found"
+            });
+          }
+        });
+      });
+
       router.post('/process/:id', function (req, res, next) {
         db.collection("applications").findOne({
           "_id": ObjectId(req.params.id)
