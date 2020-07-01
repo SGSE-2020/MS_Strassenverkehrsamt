@@ -4,7 +4,6 @@ const path = require('path');
 const caller = require('grpc-caller')
 
 const app = express();
-var MongoClient = require('mongodb').MongoClient;
 
 var envType = process.env.NODE_ENV;
 if (envType == "development") {

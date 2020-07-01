@@ -9,7 +9,6 @@ exports.initialize = (config, databaseService) => {
     exchange = config.RABBITMQ_EXCHANGE;
     var connection = amqplib.connect(config.RABBITMQ_CONNECTION);
 
-    // Publisher
     connection.then((conn) => {
         return conn.createChannel();
     }).then((ch) => {
@@ -42,6 +41,7 @@ exports.initialize = (config, databaseService) => {
             });
         });
 
+        console.log("Message service started!");
         return channel;
     }).catch(console.warn);
 }

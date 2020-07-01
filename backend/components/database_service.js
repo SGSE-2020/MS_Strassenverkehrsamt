@@ -9,6 +9,7 @@ exports.initialize = (config) => {
     })
     .then(client => {
         database = client.db(config.MONGODB_DATABASE);
+        console.log("Database service started!");
     })
     .catch(console.error)  
 }

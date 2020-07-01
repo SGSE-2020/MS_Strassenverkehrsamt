@@ -1,25 +1,6 @@
 const router = require('express').Router();
-var MongoClient = require('mongodb').MongoClient;
 
 module.exports = function (config, messageService, databaseService) {
-
-  var data = {
-    "_id": '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
-    roles: ['user', 'worker']
-  }
-  databaseService.getDB().collection("roles").update({
-    "_id": data._id
-  }, data, {
-    upsert: true
-  }, function (err, result) {
-    if (err) {
-      databaseService.getDB().collection("log").insertOne({
-        type: 'worker role init',
-        timestamp: new Date().toISOString(),
-        msg: err
-      });
-    }
-  });
 
   router.get('/my', function (req, res) {
     databaseService.getDB().collection("roles").findOne({
