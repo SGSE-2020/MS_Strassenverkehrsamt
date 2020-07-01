@@ -38,14 +38,14 @@ exports.initialize = (config, databaseService) => {
                         }
                     });
                     
-                    // if (dbMsg.fields.exchange == "buergerbuero" && dbMsg.fields.routingKey == "daten.geaendert") {
+                    if (msg.fields.exchange == "buergerbuero" && msg.fields.routingKey == "daten.geaendert") {
                     //     var msgJSON = JSON.parse(dbMsg.content);
-                    //     db.log('incomeing-msg', {
-                    //         msgJSON: msgJSON,
-                    //         type: "data changed",
-                    //         uid: msgJSON.uid
-                    //     });
-                    // }
+                        db.log('incomeing-msg-content', {
+                            // msgJSON: msgJSON,
+                            type: "data changed",
+                            // uid: msgJSON.uid
+                        });
+                    }
                 }
             });
         });
