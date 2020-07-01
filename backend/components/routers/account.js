@@ -64,49 +64,57 @@ module.exports = function (config) {
                       error: err
                     });
                   } else {
-                    db.collection("roles").findOne(query, function (err, resultFindRole) {
+                    // db.collection("roles").findOne(query, function (err, resultFindRole) {
+                    //   if (err) {
+                    //     res.status(500).send({
+                    //       result: "failure",
+                    //       message: "database error, finding role",
+                    //       error: err
+                    //     });
+                    //   }
+
+                    //   if (result) {
+                    //     res.status(201).send({
+                    //       result: "success",
+                    //       message: "user created, role existed"
+                    //     });
+                    //   } else {
+                    // Create role for user
+                    db.collection("roles").insertOne({
+                      "_id": req.headers["X-User"],
+                      "roles": ['user']
+                    }, function (err, resultInsertRole) {
                       if (err) {
                         res.status(500).send({
                           result: "failure",
-                          message: "database error, finding role",
+                          message: "database error, inserting role",
                           error: err
                         });
-                      }
-
-                      if (result) {
+                      } else {
                         res.status(201).send({
                           result: "success",
-                          message: "user created, role existed"
-                        });
-                      } else {
-                        // Create role for user
-                        db.collection("roles").insertOne({
-                          "_id": req.headers["X-User"],
-                          "roles": ['user']
-                        }, function (err, resultInsertRole) {
-                          if (err) {
-                            res.status(500).send({
-                              result: "failure",
-                              message: "database error, inserting role",
-                              error: err
-                            });
-                          } else {
-                            res.status(201).send({
-                              result: "success",
-                              message: "user and role created",
-                              data: resultInsertAccount.ops[0]
-                            });
-                          }
+                          message: "user and role created",
+                          data: resultInsertAccount.ops[0]
                         });
                       }
                     });
+                    //   }
+                    // });
                   }
                 });
 
-                db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+                db.collection("log").insertOne({
+                  type: 'grpc-res',
+                  timestamp: new Date().toISOString(),
+                  msg: result
+                });
               }).catch(err => {
                 console.error(err)
-                db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
+                db.collection("log").insertOne({
+                  type: 'grpc-catch',
+                  timestamp: new Date().toISOString(),
+                  msg: err
+                });
                 res.status(500).send({
                   position: "grpc catch",
                   error: JSON.stringify(err)
