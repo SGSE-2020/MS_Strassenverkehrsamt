@@ -93,7 +93,8 @@ module.exports = function (config) {
                           } else {
                             res.status(201).send({
                               result: "success",
-                              message: "user and role created"
+                              message: "user and role created",
+                              data: result.ops[0]
                             });
                           }
                         });
