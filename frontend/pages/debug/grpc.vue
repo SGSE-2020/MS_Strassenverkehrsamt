@@ -5,7 +5,7 @@
       <br />
       <v-card outlined class="mb-2 pa-4">
         <v-card-title class="headline">
-          <span>Nummernschild</span>
+          <span>Straßenverkehrsamt - Nummernschild</span>
         </v-card-title>
         <v-card-text>
           <v-form>
@@ -25,7 +25,7 @@
       <br />
       <v-card outlined class="mb-2 pa-4">
         <v-card-title class="headline">
-          <span>Führerschein</span>
+          <span>Straßenverkehrsamt - Führerschein</span>
         </v-card-title>
         <v-card-text>
           <v-form>
@@ -41,6 +41,26 @@
           <v-btn color="secondary" @click="getDriversLicense()">Senden</v-btn>
         </v-card-actions>
         <v-card-text>{{ driverslicenseResponse }}</v-card-text>
+      </v-card>
+      <br />
+      <v-card outlined class="mb-2 pa-4">
+        <v-card-title class="headline">
+          <span>Bürgerbüro - Ankündigung</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-textarea
+              type="text"
+              label="driverslicenseUID"
+              prepend-icon="mdi-account-circle"
+              v-model="announcementBody"
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="secondary" @click="getDriversLicense()">Senden</v-btn>
+        </v-card-actions>
+        <v-card-text>{{ announcementResponse }}</v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
@@ -58,7 +78,14 @@ export default {
       licenseplateID: 'SC RT 1337',
       licenseplateResponse: '',
       driverslicenseUID: '2WWhXXQsd1fC0a4SD16WjaI3hrq2',
-      driverslicenseResponse: ''
+      driverslicenseResponse: '',
+      announcementBody: JSON.stringify({
+        title: 'ein Titel',
+        text: 'ein Text',
+        image: undefined,
+        service: 'ein Service'
+      }),
+      announcementResponse: ''
     }
   },
   computed: {},
@@ -83,6 +110,18 @@ export default {
           console.log('licenseplate success')
           console.log(response)
           this.driverslicenseResponse = JSON.stringify(response.data, null, 2)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    postAnnouncement() {
+      axios
+        .post('/api/grpc/announcement', this.announcementBody)
+        .then((response) => {
+          console.log('announcement success')
+          console.log(response)
+          this.announcementResponse = JSON.stringify(response.data, null, 2)
         })
         .catch((error) => {
           console.log(error)
