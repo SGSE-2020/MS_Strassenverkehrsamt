@@ -92,6 +92,10 @@ module.exports = function (config, messageService, databaseService) {
               error: err
             });
           } else {
+            databaseService.getDB().log('announcement-send', {
+              content: result
+            });
+
             res.status(200).send({
               result: "success",
               message: "announcement created"
