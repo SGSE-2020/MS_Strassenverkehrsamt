@@ -142,12 +142,12 @@ module.exports = function (config, messageService, databaseService) {
             }).catch(err => {
               console.error(err)
               databaseService.getDB().collection("log").insertOne({
-                type: 'grpc-catch',
+                type: 'grpc-catch-transfer',
                 timestamp: new Date().toISOString(),
                 msg: err
               });
               res.status(500).send({
-                position: "grpc catch",
+                position: "grpc catch transfer",
                 error: JSON.stringify(err)
               })
             })
@@ -155,15 +155,16 @@ module.exports = function (config, messageService, databaseService) {
         } else {
           res.status(500).send({
             result: "failure",
-            message: "internal error"
+            message: "internal error ",
+            other: resultIBAN
           })
+          databaseService.getDB().collection("log").insertOne({
+            type: 'grpc-res-error',
+            timestamp: new Date().toISOString(),
+            msg: resultIBAN
+          });
         }
 
-        databaseService.getDB().collection("log").insertOne({
-          type: 'grpc-res',
-          timestamp: new Date().toISOString(),
-          msg: resultIBAN
-        });
       }).catch(err => {
         console.error(err)
         databaseService.getDB().collection("log").insertOne({
