@@ -141,6 +141,21 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-spacer />
+
+    <div class="my-2">
+      <v-flex>
+        <v-btn
+          style="float:right"
+          small
+          color="info"
+          @click="refreshApplication()"
+          class="mb-2"
+          >Aktualisieren</v-btn
+        >
+      </v-flex>
+    </div>
   </v-flex>
 </template>
 

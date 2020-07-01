@@ -114,8 +114,16 @@
           small
           color="secondary"
           @click="dialogNewSTP = true"
-          class="mb-2"
+          class="mr-2 mb-2"
           >Kurzzeitkennzeichen bestellen</v-btn
+        >
+        <v-btn
+          style="float:right"
+          small
+          color="info"
+          @click="refreshApplication()"
+          class="mb-2"
+          >Aktualisieren</v-btn
         >
       </v-flex>
     </div>

@@ -194,9 +194,8 @@ export default {
       this.loading = true
       try {
         await this.$store.dispatch('logout')
-        // this.$router.push('/account')
-        console.log('success logout')
-        // console.log(this.$store.state.user.uid)
+        this.$router.push('/account')
+
         this.loading = false
         this.errorMessage = null
       } catch (error) {
