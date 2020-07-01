@@ -55,7 +55,7 @@ module.exports = function (config, messageService, databaseService) {
                         month: birthDate.getMonth() + 1,
                         day: birthDate.getDate()
                     },
-                    validUntil: result.license.validUntil,
+                    validUntil: result.license.validUntil / 1000,
                     isValid: validTest
                 };
             }
@@ -120,7 +120,7 @@ module.exports = function (config, messageService, databaseService) {
 
                             LicensePlate = {
                                 id: queryPlateId.city + " " + queryPlateId.alpha + " " + queryPlateId.number,
-                                validUntil: plate.validUntil,
+                                validUntil: plate.validUntil / 1000,
                                 isValid: validTest,
                                 uid: result._id
                             };

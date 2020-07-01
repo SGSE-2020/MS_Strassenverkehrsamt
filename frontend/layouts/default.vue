@@ -192,6 +192,15 @@ export default {
           showToAnyone: false,
           showToUser: true,
           showToWorker: true
+        },
+        {
+          icon: 'mdi-bug-outline',
+          title: 'gRPC',
+          to: '/debug/grpc',
+          action: true,
+          showToAnyone: false,
+          showToUser: true,
+          showToWorker: true
         }
       ]
     }
