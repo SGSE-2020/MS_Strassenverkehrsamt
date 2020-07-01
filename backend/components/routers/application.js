@@ -308,17 +308,19 @@ module.exports = function (config) {
                 }
 
                 if (resultAccount) {
-                  // accound found
+                  // Account found
 
                   foundPlate = undefined
-                  resultAccount.plates.forEach(plate => {
-                    if (plate.plateId.city == "SC" &&
-                      plate.plateId.alpha == resultApplication.plateId.alpha &&
-                      plate.plateId.number == resultApplication.plateId.number) {
+                  if (resultAccount.plates) {
+                    resultAccount.plates.forEach(plate => {
+                      if (plate.plateId.city == "SC" &&
+                        plate.plateId.alpha == resultApplication.plateId.alpha &&
+                        plate.plateId.number == resultApplication.plateId.number) {
 
-                      foundPlate = plate
-                    }
-                  });
+                        foundPlate = plate
+                      }
+                    });
+                  }
 
                   if (foundPlate) {
                     // Update
