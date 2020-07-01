@@ -163,12 +163,12 @@ module.exports = function (config, messageService, databaseService) {
       }).catch(err => {
         console.error(err)
         databaseService.getDB().collection("log").insertOne({
-          type: 'grpc-catch',
+          type: 'grpc-catch-getiban',
           timestamp: new Date().toISOString(),
           msg: err
         });
         res.status(500).send({
-          position: "grpc catch",
+          position: "grpc catch getiban " + req.headers["X-User"],
           error: JSON.stringify(err)
         })
       })

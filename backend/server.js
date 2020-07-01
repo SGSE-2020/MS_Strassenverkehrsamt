@@ -9,7 +9,8 @@ const config = {
   // RABBITMQ_CONNECTION: "amqp://localhost",  
   RABBITMQ_CONNECTION: "amqp://testmanager:sgseistgeil@ms-rabbitmq:5672/",
   RABBITMQ_EXCHANGE: "strassenverkehrsamt",
-  RABBITMQ_QUEUE: "stva"  
+  RABBITMQ_QUEUE: "stva",
+  STVA_IBAN: "DE 23 1520 0000 1699 5149 40"
 };
 
 process.on('uncaughtException', function (err) {

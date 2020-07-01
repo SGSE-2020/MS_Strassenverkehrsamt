@@ -169,7 +169,7 @@ module.exports = function (config, messageService, databaseService) {
                                         });
                                     }
 
-                                    db.collection("log").insertOne({type: 'grpc-res', timestamp: new Date().toISOString(), msg: result});
+                                    db.collection("log").insertOne({type: 'grpc-res-userid', timestamp: new Date().toISOString(), msg: result});
                                 }).catch(err => {
                                     console.error(err)
                                     db.collection("log").insertOne({ type: 'grpc-catch', timestamp: new Date().toISOString(), msg: err});
