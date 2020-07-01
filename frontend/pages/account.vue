@@ -41,7 +41,11 @@
         </v-card-actions>
       </v-card>
 
-      <v-card width="500" class="mx-auto mt-5 elevation-5" v-else>
+      <v-card
+        v-if="this.$store.state.loggedIn == true"
+        width="500"
+        class="mx-auto mt-5 elevation-5"
+      >
         <v-card-title><h1 class="display-1">Status</h1></v-card-title>
         <v-card-text>
           <v-text-field label="UID" v-model="userUID" disabled />
@@ -52,6 +56,62 @@
           <v-btn color="secondary" @click="logoutUser()">Logout</v-btn>
           <v-btn color="info" @click="refreshToken()">Refresh Token</v-btn>
         </v-card-actions>
+      </v-card>
+
+      <v-card
+        v-if="this.$store.state.loggedIn && this.$store.state.account"
+        width="500"
+        class="mx-auto mt-5 elevation-5"
+      >
+        <v-card-title><h1 class="display-1">Dein Konto</h1></v-card-title>
+        <v-flex class="pb-1">
+          <v-card
+            width="450"
+            class="mx-auto ma-5"
+            outlined
+            :color="validityColor(this.$store.state.account.license.validUntil)"
+            v-if="this.$store.state.account.license"
+          >
+            <v-card-title><h3>Führerschein</h3></v-card-title>
+            <v-card-text
+              >gültig bis
+              {{
+                new Date(
+                  this.$store.state.account.license.validUntil
+                ).toUTCString()
+              }}</v-card-text
+            >
+          </v-card>
+          <v-card width="450" class="mx-auto ma-5" outlined>
+            <v-card-title><h3>Nummernschilder</h3></v-card-title>
+            <v-flex class="pb-1">
+              <v-card
+                width="400"
+                class="mx-auto ma-5"
+                outlined
+                v-for="(item, index) in this.$store.state.account.plates"
+                :key="index"
+                :color="validityColor(item.validUntil)"
+              >
+                <v-card-title
+                  ><h3>
+                    {{
+                      item.plateId.city +
+                        ' ' +
+                        item.plateId.alpha +
+                        ' ' +
+                        item.plateId.number
+                    }}
+                  </h3></v-card-title
+                >
+                <v-card-text
+                  >gültig bis
+                  {{ new Date(item.validUntil).toUTCString() }}</v-card-text
+                >
+              </v-card>
+            </v-flex>
+          </v-card>
+        </v-flex>
       </v-card>
     </v-flex>
   </v-layout>
@@ -82,7 +142,11 @@ export default {
       return auth.currentUser.uid
     }
   },
-  mounted() {},
+  mounted() {
+    if (this.$store.state.loggedIn) {
+      this.getUserAccount()
+    }
+  },
   methods: {
     async loginUser() {
       this.loading = true
@@ -91,39 +155,40 @@ export default {
           email: this.formEmail,
           password: this.formPassword
         })
-        // this.$router.push('/')
         console.log('success login')
-        // console.log(this.$store.state.token)
         this.errorMessage = null
 
-        axios
-          .get('/api/account/my')
-          .then((response) => {
-            console.log(response.data)
-            this.$store.dispatch('setAccount', {
-              account: response.data.data
-            })
-
-            axios
-              .get('/api/roles/my')
-              .then((response) => {
-                console.log(response.data.data.roles)
-                this.$store.dispatch('setRoles', {
-                  roles: response.data.data.roles
-                })
-              })
-              .catch(function(error) {
-                console.log(error)
-              })
-          })
-          .catch(function(error) {
-            console.log(error)
-          })
+        this.getUserAccount()
       } catch (error) {
         this.loading = false
         this.errorMessage = error.message
         console.error(error.message)
       }
+    },
+    getUserAccount() {
+      axios
+        .get('/api/account/my')
+        .then((response) => {
+          console.log(response.data)
+          this.$store.dispatch('setAccount', {
+            account: response.data.data
+          })
+
+          axios
+            .get('/api/roles/my')
+            .then((response) => {
+              console.log(response.data.data.roles)
+              this.$store.dispatch('setRoles', {
+                roles: response.data.data.roles
+              })
+            })
+            .catch(function(error) {
+              console.log(error)
+            })
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     },
     async logoutUser() {
       this.loading = true
@@ -142,6 +207,13 @@ export default {
     },
     async refreshToken() {
       await this.$store.dispatch('refeshToken')
+    },
+    validityColor(timestamp) {
+      if (Date.now() < new Date(timestamp)) {
+        return 'valid'
+      } else {
+        return 'notvalid'
+      }
     }
   }
 }

@@ -64,21 +64,6 @@ module.exports = function (config) {
                       error: err
                     });
                   } else {
-                    // db.collection("roles").findOne(query, function (err, resultFindRole) {
-                    //   if (err) {
-                    //     res.status(500).send({
-                    //       result: "failure",
-                    //       message: "database error, finding role",
-                    //       error: err
-                    //     });
-                    //   }
-
-                    //   if (result) {
-                    //     res.status(201).send({
-                    //       result: "success",
-                    //       message: "user created, role existed"
-                    //     });
-                    //   } else {
                     // Create role for user
                     db.collection("roles").insertOne({
                       "_id": req.headers["X-User"],
@@ -98,8 +83,6 @@ module.exports = function (config) {
                         });
                       }
                     });
-                    //   }
-                    // });
                   }
                 });
 

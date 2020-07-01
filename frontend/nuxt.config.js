@@ -97,7 +97,9 @@ export default {
           // error: colors.deepOrange.accent4,
           // success: colors.green.accent3,
           accept: colors.green,
-          cancel: colors.red
+          cancel: colors.red,
+          valid: colors.green.lighten5,
+          notvalid: colors.red.lighten5
         }
       }
     }
