@@ -101,14 +101,25 @@
       </v-card>
     </v-dialog>
     <v-spacer />
+
     <div class="my-2">
-      <v-btn small color="secondary" @click="dialogNew = true"
-        >Neuer Antrag</v-btn
-      >
-      <v-btn small color="secondary" @click="dialogNewSTP = true" class="ml-5"
-        >Kurzzeitkennzeichen bestellen</v-btn
-      >
+      <v-flex>
+        <v-btn
+          small
+          color="secondary"
+          @click="dialogNew = true"
+          class="mr-2 mb-2"
+          >Neuer Antrag</v-btn
+        ><v-btn
+          small
+          color="secondary"
+          @click="dialogNewSTP = true"
+          class="mb-2"
+          >Kurzzeitkennzeichen bestellen</v-btn
+        >
+      </v-flex>
     </div>
+
     <v-dialog v-model="dialogNew" persistent max-width="800px">
       <v-card>
         <v-card-title>
