@@ -51,14 +51,14 @@
           <v-form>
             <v-textarea
               type="text"
-              label="driverslicenseUID"
+              label="announcementBody"
               prepend-icon="mdi-account-circle"
               v-model="announcementBody"
             />
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="secondary" @click="getDriversLicense()">Senden</v-btn>
+          <v-btn color="secondary" @click="postAnnouncement()">Senden</v-btn>
         </v-card-actions>
         <v-card-text>{{ announcementResponse }}</v-card-text>
       </v-card>
