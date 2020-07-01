@@ -55,8 +55,16 @@ module.exports = function (config, messageService, databaseService) {
         databaseService.getDB().collection("log").deleteMany({}, function (err, result) {
             if (err) {
                 console.log("error deleteing log")
+                res.status(500).send({
+                    message: "failure",
+                    result: "error deleteing log"
+                });
             } else {
                 console.log("success deleteing log")
+                res.status(200).send({
+                    message: "success",
+                    result: "success deleteing log"
+                });
             }
         });
     });
