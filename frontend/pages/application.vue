@@ -105,6 +105,9 @@
       <v-btn small color="secondary" @click="dialogNew = true"
         >Neuer Antrag</v-btn
       >
+      <v-btn small color="secondary" @click="dialogNewSTP = true" class="ml-5"
+        >Kurzzeitkennzeichen bestellen</v-btn
+      >
     </div>
     <v-dialog v-model="dialogNew" persistent max-width="800px">
       <v-card>
@@ -183,6 +186,68 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="dialogNewSTP" persistent max-width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Bestellung</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <p>
+                Die Bestellung eines Kurzzeitkennzeichen kosten 25€. Der
+                Geldbetrag wird bei bestellung automatisch von Ihrem SmartCity
+                Bankkonto abgebucht und das Kennzeichen steht Ihnen sofort zu
+                Verfügung.
+              </p>
+            </v-row>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="defaultPlateIdCity"
+                  label="Stadtkennung*"
+                  required
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="formPlateIdAlpha"
+                  label="Buchstaben*"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="formPlateIdNumber"
+                  label="Zahl*"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+          <small>*benötigte Felder</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="cancel" text @click="clearForm()">Abbrechen</v-btn>
+          <v-btn
+            color="accept"
+            text
+            @click="
+              openConfirmationDialog(
+                'Bestellen',
+                'Wollen Sie das Kurzzeitkennzeichen kostenpflichtig bestellen?',
+                orderSTP
+              )
+            "
+            >Kostenpflichtig Bestellen</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="confirmDialog" max-width="300">
       <v-card>
         <v-card-title class="headline">{{ confirmDialogTitle }}</v-card-title>
@@ -243,7 +308,8 @@ export default {
       confirmDialog: false,
       confirmDialogTitle: undefined,
       confirmDialogText: undefined,
-      confirmDialogBtnConfirm: undefined
+      confirmDialogBtnConfirm: undefined,
+      dialogNewSTP: false
     }
   },
   computed: {},
@@ -360,9 +426,28 @@ export default {
       this.clearForm()
       this.refreshApplication()
     },
+    async orderSTP() {
+      const order = {
+        alpha: this.formPlateIdAlpha,
+        number: this.formPlateIdNumber
+      }
+
+      await axios
+        .post('/api/applications/my/shorttermplate', order)
+        .then((response) => {
+          console.log(response.status)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      this.clearForm()
+      this.refreshApplication()
+    },
     clearForm() {
       this.dialog = false
       this.dialogNew = false
+      this.dialogNewSTP = false
 
       this.formType = undefined
       this.formText = undefined

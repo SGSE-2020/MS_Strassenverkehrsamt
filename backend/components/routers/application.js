@@ -62,6 +62,40 @@ module.exports = function (config) {
         });
       });
 
+      router.post('/my/shorttermplate', function (req, res, next) {
+        // get money
+
+        db.collection("accounts").update({
+          "_id": req.headers["X-User"]
+        }, {
+          $push: {
+            plates: {
+              plateId: {
+                city: 'SC',
+                alpha: req.body.alpha,
+                number: req.body.number
+              },
+              validUntil: Date.now() + (7 * 24 * 3600 * 1000)
+            }
+          }
+        }, {
+          upsert: true
+        }, function (err, result) {
+          if (err) {
+            res.status(500).send({
+              result: "failure",
+              message: "database error",
+              error: err
+            });
+          } else {
+            res.status(202).send({
+              result: "success",
+              message: " short term license plate added to user"
+            })
+          }
+        });
+      });
+
       router.get('/my/:id', function (req, res, next) {
         db.collection("applications").findOne({
           "_id": ObjectId(req.params.id),
