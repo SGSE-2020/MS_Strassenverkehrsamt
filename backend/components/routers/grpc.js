@@ -90,8 +90,8 @@ module.exports = function (config, messageService, databaseService) {
     }
 
     grpcClientAnnouncement.sendAnnouncement(data)
-      .then(result => {
-        databaseService.getDB().collection("announcement").insertOne(result, function (err, resultAnnouncement) {
+      .then(resultAnnouncement => {
+        databaseService.getDB().collection("announcement").insertOne(result, function (err, dbResultAnnouncement) {
           if (err) {
             res.status(500).send({
               result: "failure",
@@ -107,7 +107,8 @@ module.exports = function (config, messageService, databaseService) {
             res.status(200).send({
               result: "success",
               message: "announcement created",
-              announcement: resultAnnouncement
+              announcement: resultAnnouncement,
+              input: data
             })
             databaseService.getDB().log('announcement-send', {
               result: "success",
