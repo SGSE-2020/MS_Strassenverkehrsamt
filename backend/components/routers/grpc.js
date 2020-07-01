@@ -89,7 +89,7 @@ module.exports = function (config, messageService, databaseService) {
       service: req.body.service
     }
 
-    grpcClient.sendAnnouncement(data)
+    grpcClientAnnouncement.sendAnnouncement(data)
       .then(result => {
         databaseService.getDB().collection("announcement").insertOne(result, function (err, resultAnnouncement) {
           if (err) {
