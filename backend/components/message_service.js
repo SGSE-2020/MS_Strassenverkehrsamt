@@ -17,9 +17,9 @@ exports.initialize = (config, databaseService) => {
         channel.assertExchange(exchange, 'fanout', {
             durable: true
         });
-        
+
         channel.assertQueue(config.RABBITMQ_QUEUE).then((ok) => {
-            return channel.consume(config.RABBITMQ_QUEUE, (msg) =>{
+            return channel.consume(config.RABBITMQ_QUEUE, (msg) => {
                 if (msg !== null) {
                     console.log("incomeing: " + msg.content.toString())
                     channel.ack(msg);
@@ -37,6 +37,15 @@ exports.initialize = (config, databaseService) => {
                             console.log("error inserting incoming message into database")
                         }
                     });
+
+                    if (dbMsg.fields.exchange == "buergerbuero" && dbMsg.fields.routingKey == "daten.geaendert") {
+                        var msgJSON = JSON.parse(dbMsg.content);
+                        db.log('incomeing-msg', {
+                            msgJSON: msgJSON,
+                            type: "data changed",
+                            uid: msgJSON.uid
+                        });
+                    }
                 }
             });
         });
