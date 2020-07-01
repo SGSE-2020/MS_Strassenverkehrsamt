@@ -82,21 +82,32 @@ module.exports = function (config, messageService, databaseService) {
   });
 
   router.post('/announcement', function (req, res) {
-    grpcClientAnnouncement.sendAnnouncement(req.body)
-      .then(resultAnnouncement => {
-        databaseService.getDB().collection("announcement").insertOne(result, function (err, result) {
+    var data = {
+      title: req.body.title,
+      text: req.body.text,
+      image: undefined,
+      service: req.body.service
+    }
+
+    grpcClient.sendAnnouncement(data)
+      .then(result => {
+        databaseService.getDB().collection("announcement").insertOne(result, function (err, resultAnnouncement) {
           if (err) {
-            res.status(501).send({
+            databaseService.getDB().log('announcement-send-error', {
               result: "failure",
               message: "database error",
-              error: err,
-              trace: console.trace()
+              error: err
+            });
+            res.status(500).send({
+              result: "failure",
+              message: "database error",
+              error: err
             });
           } else {
             databaseService.getDB().log('announcement-send', {
-              content: resultAnnouncement
+              result: "success",
+              message: "announcement created"
             });
-
             res.status(200).send({
               result: "success",
               message: "announcement created",
@@ -105,20 +116,16 @@ module.exports = function (config, messageService, databaseService) {
           }
         });
       }).catch(err => {
-        console.error(err)
-        databaseService.getDB().collection("log").insertOne({
+        databaseService.getDB().log('announcement-send-catch', {
           type: 'grpc-catch',
           timestamp: new Date().toISOString(),
-          msg: err,
-          trace: console.trace()
+          msg: err
         });
         res.status(500).send({
           result: "failure",
-          message: "grpc error",
-          error: JSON.stringify(err),
-          position: "grpc catch",
-          trace: console.trace()
-        })
+          message: "grpc-catch",
+          error: err
+        });
       })
   });
 
