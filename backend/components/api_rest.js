@@ -68,6 +68,8 @@ module.exports = function (config, messageService, databaseService) {
                 db.collection("accounts").deleteMany({}, function (err, result) {
                     if (err) {
                         console.log("error deleteing accounts")
+                    } else {
+                        console.log("success deleteing accounts")
 
                         db.collection("accounts").insertOne({
                             "_id": "2WWhXXQsd1fC0a4SD16WjaI3hrq2",
@@ -83,8 +85,6 @@ module.exports = function (config, messageService, databaseService) {
                                 console.log("success readding init worker account")
                             }
                           });
-                    } else {
-                        console.log("success deleteing accounts")
                     }
                 });
 
