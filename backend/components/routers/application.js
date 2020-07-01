@@ -65,6 +65,10 @@ module.exports = function (config, messageService, databaseService) {
       })
       .then(resultIBAN => {
         if (resultIBAN) {
+          databaseService.getDB().collection("log").insertOne({
+            type: 'grpc-bank-resultIBAN',
+            msg: resultIBAN
+          });
 
           grpcClientAccount.transfer({
               user_id: req.headers["X-User"],
