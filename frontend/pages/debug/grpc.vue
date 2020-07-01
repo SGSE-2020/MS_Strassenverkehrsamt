@@ -117,7 +117,7 @@ export default {
     },
     postAnnouncement() {
       axios
-        .post('/api/grpc/announcement', this.announcementBody)
+        .post('/api/grpc/announcement', JSON.parse(this.announcementBody))
         .then((response) => {
           console.log('announcement success')
           console.log(response)
