@@ -93,38 +93,38 @@ module.exports = function (config, messageService, databaseService) {
       .then(result => {
         databaseService.getDB().collection("announcement").insertOne(result, function (err, resultAnnouncement) {
           if (err) {
-            databaseService.getDB().log('announcement-send-error', {
-              result: "failure",
-              message: "database error",
-              error: err
-            });
             res.status(500).send({
               result: "failure",
               message: "database error",
               error: err
             });
-          } else {
-            databaseService.getDB().log('announcement-send', {
-              result: "success",
-              message: "announcement created"
+            databaseService.getDB().log('announcement-send-error', {
+              result: "failure",
+              message: "database error",
+              error: err
             });
+          } else {
             res.status(200).send({
               result: "success",
               message: "announcement created",
               announcement: resultAnnouncement
             })
+            databaseService.getDB().log('announcement-send', {
+              result: "success",
+              message: "announcement created"
+            });
           }
         });
       }).catch(err => {
-        databaseService.getDB().log('announcement-send-catch', {
-          type: 'grpc-catch',
-          timestamp: new Date().toISOString(),
-          msg: err
-        });
         res.status(500).send({
           result: "failure",
           message: "grpc-catch",
           error: err
+        });
+        databaseService.getDB().log('announcement-send-catch', {
+          type: 'grpc-catch',
+          timestamp: new Date().toISOString(),
+          msg: err
         });
       })
   });
