@@ -28,7 +28,7 @@ module.exports = function (config, messageService, databaseService) {
     }));
 
     app.get('/alive', function (req, res) {
-        res.send({
+        res.status(200).send({
             status: "alive"
         });
     });
