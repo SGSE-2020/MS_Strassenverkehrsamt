@@ -77,7 +77,20 @@ module.exports = function (config, messageService, databaseService) {
                             "lastName": "Admin",
                             "nickName": "admin",
                             "email": "admin@stva.com",
-                            "birthDate": "01.01.1970"
+                            "birthDate": "01.01.1970",
+                            "license": {
+                                "validUntil": 1596190673997
+                            },
+                            "plates": [
+                                {
+                                    "plateId": {
+                                        "city": 'SC',
+                                        "alpha": 'RT',
+                                        "number": '1337'
+                                    },
+                                    "validUntil": 1596191027160
+                                }
+                            ]
                           }, function (err, result) {
                             if (err) {
                                 console.log("error readding init worker account")
