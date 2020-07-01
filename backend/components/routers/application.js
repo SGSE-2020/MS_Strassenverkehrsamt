@@ -15,12 +15,14 @@ module.exports = function (config) {
       router.get('/my/all', function (req, res, next) {
         db.collection("applications").find({
           "uid": req.headers["X-User"]
-        }).sort( { timestamp: -1 } ).toArray(function (err, result) {
+        }).sort({
+          timestamp: -1
+        }).toArray(function (err, result) {
           if (err) {
             res.status(500).send({
               result: "failure"
             });
-          } else if(result) {
+          } else if (result) {
             res.status(200).send({
               result: "success",
               data: result
@@ -59,7 +61,7 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.get('/my/:id', function (req, res, next) {
         db.collection("applications").findOne({
           "_id": ObjectId(req.params.id),
@@ -84,7 +86,7 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.put('/my/:id', function (req, res, next) {
         var update = {
           $set: {
@@ -93,10 +95,10 @@ module.exports = function (config) {
           }
         }
 
-        if(req.body.status && req.body.status === "closed"){
+        if (req.body.status && req.body.status === "closed") {
           console.log("status closed")
           update.$set['status'] = 'closed'
-        } else if(req.body.status && req.body.status === "open"){
+        } else if (req.body.status && req.body.status === "open") {
           console.log("status open")
           update.$set['status'] = 'open'
         }
@@ -111,7 +113,7 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-          } else if(result.result.nModified == 1) {
+          } else if (result.result.nModified == 1) {
             res.status(202).send({
               message: "success"
             })
@@ -147,14 +149,16 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.get('/all', function (req, res, next) {
-        db.collection("applications").find({}).sort( { timestamp: -1 } ).toArray(function (err, result) {
+        db.collection("applications").find({}).sort({
+          timestamp: -1
+        }).toArray(function (err, result) {
           if (err) {
             res.status(500).send({
               result: "failure"
             });
-          } else if(result) {
+          } else if (result) {
             res.status(200).send({
               result: "success",
               data: result
@@ -167,16 +171,18 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.get('/all/open', function (req, res, next) {
         db.collection("applications").find({
           status: "open"
-        }).sort( { timestamp: -1 } ).toArray(function (err, result) {
+        }).sort({
+          timestamp: -1
+        }).toArray(function (err, result) {
           if (err) {
             res.status(500).send({
               result: "failure"
             });
-          } else if(result) {
+          } else if (result) {
             res.status(200).send({
               result: "success",
               data: result
@@ -189,7 +195,7 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.get('/:id', function (req, res, next) {
         db.collection("applications").findOne({
           "_id": ObjectId(req.params.id)
@@ -213,7 +219,7 @@ module.exports = function (config) {
           }
         });
       });
-      
+
       router.put('/:id', function (req, res, next) {
         var update = {
           $set: req.body
@@ -230,7 +236,7 @@ module.exports = function (config) {
               message: "database error",
               error: err
             });
-          } else if(result.result.nModified == 1) {
+          } else if (result.result.nModified == 1) {
             res.status(202).send({
               message: "success"
             })
@@ -239,6 +245,153 @@ module.exports = function (config) {
               result: "failure",
               message: "application not found"
             });
+          }
+        });
+      });
+
+      router.post('/process/:id', function (req, res, next) {
+        db.collection("applications").findOne({
+          "_id": ObjectId(req.params.id)
+        }, function (err, resultApplication) {
+          if (err) {
+            res.status(500).send({
+              result: "failure",
+              message: "database error",
+              error: err
+            });
+          } else if (resultApplication) {
+            // process
+
+            // drivers license
+            if (resultApplication.type == "license") {
+              var data = {
+                $set: {
+                  license: {
+                    validUntil: Date.now() + (30 * 24 * 3600 * 1000)
+                  }
+                }
+              }
+
+              db.collection("accounts").update({
+                "_id": resultApplication.uid
+              }, data, {
+                upsert: true
+              }, function (err, result) {
+                if (err) {
+                  res.status(500).send({
+                    result: "failure",
+                    message: "database error",
+                    error: err
+                  });
+                } else {
+                  res.status(202).send({
+                    result: "success",
+                    message: "drivers license updated"
+                  })
+                }
+              });
+            } else if (resultApplication.type == "plate") {
+
+              db.collection("accounts").findOne({
+                "_id": resultApplication.uid
+              }, {
+                projection: {
+                  plates: 1
+                }
+              }, function (err, resultAccount) {
+                if (err) {
+                  res.status(500).send({
+                    result: "failure",
+                    message: "database error",
+                    error: err
+                  });
+                }
+
+                if (resultAccount) {
+                  // accound found
+
+                  foundPlate = undefined
+                  resultAccount.plates.forEach(plate => {
+                    if (plate.plateId.city == "SC" &&
+                      plate.plateId.alpha == resultApplication.plateId.alpha &&
+                      plate.plateId.number == resultApplication.plateId.number) {
+
+                      foundPlate = plate
+                    }
+                  });
+
+                  if (foundPlate) {
+                    // Update
+                    console.log("Update")
+                    db.collection("accounts").update({
+                      "_id": resultApplication.uid,
+                      "plates.plateId": foundPlate.plateId
+                    }, {
+                      $set: {
+                        "plates.$.validUntil": Date.now() + (30 * 24 * 3600 * 1000)
+                      }
+                    }, function (err, result) {
+                      if (err) {
+                        res.status(500).send({
+                          result: "failure",
+                          message: "database error",
+                          error: err
+                        });
+                      } else {
+                        res.status(202).send({
+                          result: "success",
+                          message: "license plate valid time extended"
+                        })
+                      }
+                    });
+
+                  } else {
+                    // Insert
+                    console.log("insert")
+
+                    db.collection("accounts").update({
+                      "_id": resultApplication.uid
+                    }, {
+                      $push: {
+                        plates: {
+                          plateId: {
+                            city: 'SC',
+                            alpha: resultApplication.plateId.alpha,
+                            number: resultApplication.plateId.number
+                          },
+                          validUntil: Date.now() + (30 * 24 * 3600 * 1000)
+                        }
+                      }
+                    }, {
+                      upsert: true
+                    }, function (err, result) {
+                      if (err) {
+                        res.status(500).send({
+                          result: "failure",
+                          message: "database error",
+                          error: err
+                        });
+                      } else {
+                        res.status(202).send({
+                          result: "success",
+                          message: "license plate added to user"
+                        })
+                      }
+                    });
+                  }
+                } else {
+                  res.status(404).send({
+                    result: "failure",
+                    message: "user not found"
+                  })
+                }
+              });
+            }
+          } else {
+            res.status(404).send({
+              result: "failure",
+              message: "application not found"
+            })
           }
         });
       });

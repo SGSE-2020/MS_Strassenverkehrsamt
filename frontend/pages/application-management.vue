@@ -220,13 +220,15 @@ export default {
             this.originStatus === 'Offen'
           ) {
             console.log('Offen => Angenommen')
-            if (this.formType === 'Nummernschild') {
-              // TODO Add Nummernschild
-            } else if (this.formType === 'Umweltplakette') {
-              // TODO Add Umweltplakette
-            } else if (this.formType === 'Führerschein') {
-              // TODO Add Führerschein
-            }
+
+            axios
+              .post('/api/applications/process/' + this.formId)
+              .then((response) => {
+                console.log(response.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              })
           }
         })
         .catch((error) => {
