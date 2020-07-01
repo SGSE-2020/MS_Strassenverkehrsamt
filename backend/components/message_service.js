@@ -39,11 +39,15 @@ exports.initialize = (config, databaseService) => {
                     });
                     
                     if (msg.fields.exchange == "buergerbuero" && msg.fields.routingKey == "daten.geaendert") {
-                    //     var msgJSON = JSON.parse(dbMsg.content);
-                        db.log('incomeing-msg-content', {
-                            // msgJSON: msgJSON,
+                        db.log('incomeing-msg-content-1', {
+                            type: "data changed"
+                        });
+
+                        var msgJSON = JSON.parse(dbMsg.content);
+                        db.log('incomeing-msg-content-2', {
+                            msgJSON: msgJSON,
                             type: "data changed",
-                            // uid: msgJSON.uid
+                            uid: msgJSON.uid
                         });
                     }
                 }
