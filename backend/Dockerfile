@@ -9,10 +9,11 @@ COPY package*.json ./
 
 RUN npm install
 # If you are building your code for production
-RUN npm test
 
 # Bundle app source
 COPY . .
+
+RUN npm test
 
 EXPOSE 8080
 CMD [ "node", "server.js" ]
