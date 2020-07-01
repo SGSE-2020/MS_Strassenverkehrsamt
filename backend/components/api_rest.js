@@ -51,6 +51,16 @@ module.exports = function (config, messageService, databaseService) {
         });
     });
 
+    app.delete('/log', function (req, res) {
+        databaseService.getDB().collection("log").deleteMany({}, function (err, result) {
+            if (err) {
+                console.log("error deleteing log")
+            } else {
+                console.log("success deleteing log")
+            }
+        });
+    });
+
     app.delete('/resetdb', function (req, res) {
         databaseService.getDB().collection("accounts").deleteMany({}, function (err, result) {
             if (err) {
