@@ -240,39 +240,39 @@ export default {
     )
 
     // Resent request with new token if
-    axios.interceptors.response.use(
-      (response) => {
-        // Return a successful response back to the calling service
-        return response
-      },
-      async (error) => {
-        // Return any error which is not due to authentication back to the calling service
-        if (error.response.status !== 401) {
-          return new Promise((resolve, reject) => {
-            reject(error)
-          })
-        }
+    // axios.interceptors.response.use(
+    //   (response) => {
+    //     // Return a successful response back to the calling service
+    //     return response
+    //   },
+    //   async (error) => {
+    //     // Return any error which is not due to authentication back to the calling service
+    //     if (error.response.status !== 401) {
+    //       return new Promise((resolve, reject) => {
+    //         reject(error)
+    //       })
+    //     }
 
-        console.log('resent request with new token')
+    //     console.log('resent request with new token')
 
-        // Try request again with new token
-        await this.$store.dispatch('refeshToken')
-        // New request with new token
-        const config = error.config
-        config.headers.Authorization = this.$store.state.token
+    //     // Try request again with new token
+    //     await this.$store.dispatch('refeshToken')
+    //     // New request with new token
+    //     const config = error.config
+    //     config.headers.Authorization = this.$store.state.token
 
-        return new Promise((resolve, reject) => {
-          axios
-            .request(config)
-            .then((response) => {
-              resolve(response)
-            })
-            .catch((error) => {
-              reject(error)
-            })
-        })
-      }
-    )
+    //     return new Promise((resolve, reject) => {
+    //       axios
+    //         .request(config)
+    //         .then((response) => {
+    //           resolve(response)
+    //         })
+    //         .catch((error) => {
+    //           reject(error)
+    //         })
+    //     })
+    //   }
+    // )
   }
 }
 </script>
