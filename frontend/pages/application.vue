@@ -172,9 +172,15 @@
                 ></v-text-field>
               </v-col> </v-row
             ><v-row v-if="formType === 'Umweltplakette'">
+              <p>
+                Bei Annahme des Antrags wird Ihnene die Umweltplakette
+                postalisch zugeschickt, damit Sie ihr Fahrzeug markieren können.
+              </p></v-row
+            >
+            <v-row v-if="formType === 'Umweltplakette'">
               <v-col cols="12" sm="6">
                 <v-select
-                  :items="['SC AB 1234', 'SC C 2005', 'SC D 6848']"
+                  :items="ownLicensePlates"
                   label="Nummernschild*"
                   required
                 ></v-select>
@@ -323,6 +329,7 @@ export default {
         { text: 'Datum', value: 'date' }
       ],
       applications: [],
+      ownLicensePlates: [],
       defaultPlateIdCity: 'SC',
       formPlateIdCity: undefined,
       formPlateIdAlpha: undefined,
@@ -373,6 +380,21 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+
+      // Load own license plates from Account
+      if (this.$store.state.account.plates) {
+        this.$store.state.account.plates.forEach((plate) => {
+          this.ownLicensePlates.push(
+            plate.plateId.city +
+              ' ' +
+              plate.plateId.alpha +
+              ' ' +
+              plate.plateId.number
+          )
+        })
+
+        console.log(this.ownLicensePlates)
+      }
     },
     openApplication(entry) {
       axios
