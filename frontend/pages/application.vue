@@ -160,6 +160,7 @@
                   v-model="formPlateIdAlpha"
                   label="Buchstaben*"
                   required
+                  maxlength="2"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
@@ -167,6 +168,7 @@
                   v-model="formPlateIdNumber"
                   label="Zahl*"
                   required
+                  maxlength="4"
                 ></v-text-field>
               </v-col> </v-row
             ><v-row v-if="formType === 'Umweltplakette'">
@@ -237,6 +239,7 @@
                   v-model="formPlateIdAlpha"
                   label="Buchstaben*"
                   required
+                  maxlength="2"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
@@ -244,6 +247,7 @@
                   v-model="formPlateIdNumber"
                   label="Zahl*"
                   required
+                  maxlength="4"
                 ></v-text-field>
               </v-col>
             </v-row>

@@ -242,6 +242,10 @@ export default {
             this.applications.push(newEntry)
             this.loading = false
           })
+
+          if (response.data.data.length === 0) {
+            this.loading = false
+          }
         })
         .catch((error) => {
           console.log(error)
