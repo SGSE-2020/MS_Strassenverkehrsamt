@@ -83,6 +83,13 @@
             </v-row>
           </v-container>
           <small>*benötigte Felder</small>
+
+          <v-alert
+            v-if="this.errorMessage != null"
+            type="error"
+            v-html="this.errorMessage"
+          >
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -91,7 +98,8 @@
             color="accept"
             text
             @click="
-              openConfirmationDialog(
+              checkInput(
+                openConfirmationDialog,
                 'Speichern',
                 'Wollen Sie den Antrag speichern?',
                 saveApplication
@@ -181,6 +189,7 @@
               <v-col cols="12" sm="6">
                 <v-select
                   :items="ownLicensePlates"
+                  v-model="formSelectedOwnLicensePlate"
                   label="Nummernschild*"
                   required
                 ></v-select>
@@ -196,6 +205,13 @@
             </v-row>
           </v-container>
           <small>*benötigte Felder</small>
+
+          <v-alert
+            v-if="this.errorMessage != null"
+            type="error"
+            v-html="this.errorMessage"
+          >
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -204,7 +220,8 @@
             color="accept"
             text
             @click="
-              openConfirmationDialog(
+              checkInput(
+                openConfirmationDialog,
                 'Erstellen',
                 'Wollen Sie den Antrag erstellen?',
                 createApplication
@@ -259,6 +276,13 @@
             </v-row>
           </v-container>
           <small>*benötigte Felder</small>
+
+          <v-alert
+            v-if="this.errorMessage != null"
+            type="error"
+            v-html="this.errorMessage"
+          >
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -267,7 +291,8 @@
             color="accept"
             text
             @click="
-              openConfirmationDialog(
+              checkInput(
+                openConfirmationDialog,
                 'Bestellen',
                 'Wollen Sie das Kurzzeitkennzeichen kostenpflichtig bestellen?',
                 orderSTP
@@ -338,11 +363,13 @@ export default {
       formType: undefined,
       formStatus: undefined,
       formId: undefined,
+      formSelectedOwnLicensePlate: undefined,
       confirmDialog: false,
       confirmDialogTitle: undefined,
       confirmDialogText: undefined,
       confirmDialogBtnConfirm: undefined,
-      dialogNewSTP: false
+      dialogNewSTP: false,
+      errorMessage: undefined
     }
   },
   computed: {},
@@ -432,15 +459,23 @@ export default {
         status: 'open'
       }
 
-      if (
-        this.formType === 'Nummernschild' ||
-        this.formType === 'Umweltplakette'
-      ) {
-        console.log('Nummernschild/Umweltplakette')
+      if (this.formType === 'Nummernschild') {
+        console.log('Nummernschild')
         newApplication.plateId = {
           city: this.formPlateIdCity,
           alpha: this.formPlateIdAlpha,
           number: this.formPlateIdNumber
+        }
+      }
+
+      if (this.formType === 'Umweltplakette') {
+        console.log('Umweltplakette')
+
+        const parts = this.formSelectedOwnLicensePlate.split(' ')
+        newApplication.plateId = {
+          city: parts[0],
+          alpha: parts[1],
+          number: parts[2]
         }
       }
 
@@ -505,6 +540,35 @@ export default {
       this.formPlateIdCity = undefined
       this.formPlateIdAlpha = undefined
       this.formPlateIdNumber = undefined
+    },
+    checkInput(confirmFunc, title, text, confirm) {
+      this.errorMessage = undefined
+
+      if (this.formType === 'Nummernschild') {
+        const LicensePlateRegex = /^SC\s[A-Z]{1,2}\s\d{1,4}$/
+        const plateString =
+          'SC ' + this.formPlateIdAlpha + ' ' + this.formPlateIdNumber
+
+        if (!LicensePlateRegex.test(plateString)) {
+          // Display ERROR
+          console.log(plateString)
+          this.errorMessage = 'Nummernschildformat ungültig'
+        }
+      }
+
+      if (this.formType === undefined) {
+        // Display ERROR
+        this.errorMessage = 'Kein Antragstyp angegeben!'
+      }
+
+      if (this.formText === undefined || this.formText === '') {
+        // Display ERROR
+        this.errorMessage = 'Kein Antragstext angegeben!'
+      }
+
+      if (this.errorMessage === undefined) {
+        confirmFunc(title, text, confirm)
+      }
     },
     openConfirmationDialog(title, text, confirm) {
       this.confirmDialog = true
