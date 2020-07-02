@@ -559,6 +559,16 @@ export default {
         }
       }
 
+      if (this.formType === 'Umweltplakette') {
+        const LicensePlateRegex = /^SC\s[A-Z]{1,2}\s\d{1,4}$/
+
+        if (!LicensePlateRegex.test(this.formSelectedOwnLicensePlate)) {
+          // Display ERROR
+          console.log(this.formSelectedOwnLicensePlate)
+          this.errorMessage = 'Nummernschildformat ungültig'
+        }
+      }
+
       if (!order) {
         if (this.formType === undefined) {
           // Display ERROR
