@@ -11,6 +11,8 @@
           @click:row="openApplication"
           v-bind="attrs"
           v-on="on"
+          :loading="loading"
+          loading-text="Anträge werden geladen..."
         >
           <template v-slot:top> </template>
         </v-data-table>
@@ -168,6 +170,7 @@ export default {
     return {
       singleSelect: false,
       selected: [],
+      loading: false,
       dialog: false,
       dialogNew: false,
       headers: [
@@ -203,6 +206,8 @@ export default {
   },
   methods: {
     refreshApplication() {
+      this.loading = true
+
       this.applications = []
       axios
         .get('/api/applications/all')
@@ -235,6 +240,7 @@ export default {
             }
 
             this.applications.push(newEntry)
+            this.loading = false
           })
         })
         .catch((error) => {
