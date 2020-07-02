@@ -85,13 +85,13 @@ module.exports = function (config, messageService, databaseService) {
     var data = {
       title: req.body.title,
       text: req.body.text,
-      image: undefined,
+      image: req.body.image,
       service: req.body.service
     }
 
     grpcClientAnnouncement.sendAnnouncement(data)
       .then(resultAnnouncement => {
-        databaseService.getDB().collection("announcement").insertOne(result, function (err, dbResultAnnouncement) {
+        databaseService.getDB().collection("announcement").insertOne(resultAnnouncement, function (err, dbResultAnnouncement) {
           if (err) {
             res.status(500).send({
               result: "failure",
@@ -120,12 +120,14 @@ module.exports = function (config, messageService, databaseService) {
         res.status(500).send({
           result: "failure",
           message: "grpc-catch",
-          error: err
+          error: err,
+          data: data
         });
         databaseService.getDB().log('announcement-send-catch', {
           type: 'grpc-catch',
           timestamp: new Date().toISOString(),
-          msg: err
+          msg: err,
+          data: data
         });
       })
   });
