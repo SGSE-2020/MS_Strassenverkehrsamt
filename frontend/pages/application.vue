@@ -118,13 +118,19 @@
         <v-btn
           small
           color="secondary"
-          @click="dialogNew = true"
+          @click="
+            dialogNew = true
+            errorMessage = undefined
+          "
           class="mr-2 mb-2"
           >Neuer Antrag</v-btn
         ><v-btn
           small
           color="secondary"
-          @click="dialogNewSTP = true"
+          @click="
+            dialogNewSTP = true
+            errorMessage = undefined
+          "
           class="mr-2 mb-2"
           >Kurzzeitkennzeichen bestellen</v-btn
         >
@@ -430,6 +436,7 @@ export default {
       axios
         .get('/api/applications/my/' + entry._id)
         .then((response) => {
+          this.errorMessage = undefined
           this.formType = entry.type
 
           if (
