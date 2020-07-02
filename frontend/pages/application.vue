@@ -102,7 +102,8 @@
                 openConfirmationDialog,
                 'Speichern',
                 'Wollen Sie den Antrag speichern?',
-                saveApplication
+                saveApplication,
+                false
               )
             "
             >Übernehmen</v-btn
@@ -224,7 +225,8 @@
                 openConfirmationDialog,
                 'Erstellen',
                 'Wollen Sie den Antrag erstellen?',
-                createApplication
+                createApplication,
+                false
               )
             "
             >Übernehmen</v-btn
@@ -295,7 +297,8 @@
                 openConfirmationDialog,
                 'Bestellen',
                 'Wollen Sie das Kurzzeitkennzeichen kostenpflichtig bestellen?',
-                orderSTP
+                orderSTP,
+                true
               )
             "
             >Kostenpflichtig Bestellen</v-btn
@@ -541,7 +544,7 @@ export default {
       this.formPlateIdAlpha = undefined
       this.formPlateIdNumber = undefined
     },
-    checkInput(confirmFunc, title, text, confirm) {
+    checkInput(confirmFunc, title, text, confirm, order) {
       this.errorMessage = undefined
 
       if (this.formType === 'Nummernschild') {
@@ -556,14 +559,25 @@ export default {
         }
       }
 
-      if (this.formType === undefined) {
-        // Display ERROR
-        this.errorMessage = 'Kein Antragstyp angegeben!'
-      }
+      if (!order) {
+        if (this.formType === undefined) {
+          // Display ERROR
+          this.errorMessage = 'Kein Antragstyp angegeben!'
+        }
 
-      if (this.formText === undefined || this.formText === '') {
-        // Display ERROR
-        this.errorMessage = 'Kein Antragstext angegeben!'
+        if (this.formType === 'Nummernschild') {
+          if (this.formText === undefined || this.formText === '') {
+            // Display ERROR
+            this.errorMessage = 'Kein Antragstext angegeben!'
+          }
+        }
+
+        if (this.formType === 'Führerschein') {
+          if (this.formText === undefined || this.formText === '') {
+            // Display ERROR
+            this.errorMessage = 'Kein Antragstext angegeben!'
+          }
+        }
       }
 
       if (this.errorMessage === undefined) {
